@@ -1,22 +1,45 @@
-import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+
+import com.sun.org.apache.bcel.internal.generic.LoadInstruction;
 
 
-public class Main extends JFrame {
+public class Main extends JFrame implements ActionListener {
+	JFileChooser fileChooser;
+	JButton loadImageButton;
+	ImagePanel imagePanel;
+	
 	public static void main(String[] args) {
 		new Main();
 	}
 	
 	public Main() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(new BorderLayout());
 		
-		ImagePanel imagePanel = new ImagePanel();
+		loadImageButton = new JButton("Load image...");
+		imagePanel = new ImagePanel();
 		
-		getContentPane().add(imagePanel);
+		getContentPane().add(loadImageButton, BorderLayout.NORTH);
+		getContentPane().add(imagePanel, BorderLayout.CENTER);
 		pack();
 		
+		loadImageButton.addActionListener(this);
+		fileChooser = new JFileChooser();
+		
 		setVisible(true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if (arg0.getSource() == loadImageButton) {
+			fileChooser.showOpenDialog(Main.this);
+			imagePanel.loadImage(fileChooser.getSelectedFile());
+		}
 	}
 }
