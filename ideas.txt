@@ -1,0 +1,10 @@
+Text recognition
+Blob detection
+Minimizing an error function
+    Sum of edges
+    Gaps between pieces and overlap
+Random translation and rotation of pieces
+Thresholding
+Strip boundaries like a jigsaw puzzle
+Collision detection and sliding
+Lining up text by matching discontinuous boundary points
