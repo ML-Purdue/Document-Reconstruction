@@ -1,10 +1,18 @@
-Text recognition
-Blob detection
+Text recognition (ZD)
+Blob detection (PP)
 Minimizing an error function
     Sum of edges
-    Gaps between pieces and overlap
-Random translation and rotation of pieces
-Thresholding
+    Gaps between pieces and overlap (CW)
+Random translation and rotation of pieces (CW)
+Thresholding (CW)
 Strip boundaries like a jigsaw puzzle
-Collision detection and sliding
+Collision detection and sliding (RB)
 Lining up text by matching discontinuous boundary points
+OpenCV for Java (CW)
+
+Pipeline:
+    Load image (done)
+    Pre-processing (thresholding)
+    Feature extraction (blob detection, boundary points, text recognition)
+    Iterative algorithms (random transforms, minimizing error functions, collisions and sliding)
+    Display (done)
