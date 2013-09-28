@@ -24,6 +24,10 @@ public class ImagePanel extends JPanel {
 	}
 
 	public void loadImage(File selectedFile) {
+		if (selectedFile == null) {
+			return;
+		}
+		
 		try {
 			image = ImageIO.read(selectedFile);
 		} catch (IOException e) {
