@@ -16,5 +16,15 @@ Pipeline:
 	Iterated through image to get a list of colors
 	Got a list of color appearances
     Feature extraction (blob detection, boundary points, text recognition)
+	Blob Detection (MC, NO)
+		We created an iterative flood fill to mark each piece as a blob.
+		Each blob has its own id number, which will be used for saving.
+		Requires the input image to be marked with alpha values for
+		transparancy.
+		Currently prints out an output image where each blob is colored
+		black and empty space is white.
+		Next Step: Saving each blob to its own image.  To do this, create an arraylist
+		of int arrays which store the minX,minY,maxX,maxY for each blob.  Use this to
+		save the blobs.
     Iterative algorithms (random transforms, minimizing error functions, collisions and sliding)
     Display (done)
