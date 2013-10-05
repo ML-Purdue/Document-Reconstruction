@@ -35,7 +35,6 @@ public class Main extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == loadImageButton) {
 			fileChooser.showOpenDialog(Main.this);
