@@ -13,6 +13,8 @@ OpenCV for Java (CW)
 Pipeline:
     Load image (done)
     Pre-processing (thresholding)
+	Iterated through image to get a list of colors
+	Got a list of color appearances
     Feature extraction (blob detection, boundary points, text recognition)
     Iterative algorithms (random transforms, minimizing error functions, collisions and sliding)
     Display (done)
