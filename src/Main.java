@@ -30,7 +30,7 @@ public class Main extends JFrame implements ActionListener {
 		pack();
 		
 		loadImageButton.addActionListener(this);
-		fileChooser = new JFileChooser();
+		fileChooser = new JFileChooser(System.getProperty("user.dir"));
 		
 		setVisible(true);
 	}
