@@ -97,7 +97,7 @@ public class BlobDetector {
             blobColors[i] = randomColor.getRGB();
         }
         System.out.println("Creating outImage");
-        BufferedImage outImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage outImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int x = 0; x < baseImage.getWidth(); x++) {
             for (int y = 0; y < baseImage.getHeight(); y++) {
                 if (blobs[x][y] == 0) {
@@ -124,7 +124,7 @@ public class BlobDetector {
             directory.mkdir();
         }
         for (BlobRegion region : blobRegions) {
-            BufferedImage regionImage = new BufferedImage(region.maxX - region.minX + 1, region.maxY - region.minY + 1, BufferedImage.TYPE_INT_RGB);
+            BufferedImage regionImage = new BufferedImage(region.maxX - region.minX + 1, region.maxY - region.minY + 1, BufferedImage.TYPE_INT_ARGB);
             for (int x = region.minX; x <= region.maxX; x++) {
                 for (int y = region.minY; y <= region.maxY; y++) {
                     if (blobs[x][y] != region.blobNum) {
