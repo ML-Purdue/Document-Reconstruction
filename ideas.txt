@@ -9,6 +9,7 @@ Strip boundaries like a jigsaw puzzle
 Collision detection and sliding (RB)
 Lining up text by matching discontinuous boundary points
 OpenCV for Java (CW)
+Generate an N-tuple for each edge and cluster them in N-space. (CC)
 
 Pipeline:
     Load image (done)
