@@ -26,5 +26,6 @@ Pipeline:
 		Next Step: Saving each blob to its own image.  To do this, create an arraylist
 		of int arrays which store the minX,minY,maxX,maxY for each blob.  Use this to
 		save the blobs.
+		Blob Detection done for the most part
     Iterative algorithms (random transforms, minimizing error functions, collisions and sliding)
     Display (done)
