@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Stack;
 import javax.imageio.ImageIO;
 
@@ -17,8 +18,8 @@ public class BlobDetector {
 
     public void detectBlobs() {
         int blobNum = 0;
-        // The = 1, < size -1
-        // Are for not having to do inbounds checks for each neighbor
+
+        ArrayList<BlobRegion> blobRegions = new ArrayList<BlobRegion>();
         Stack<Pixel> pixelStack = new Stack<Pixel>();
         for (int x = 0; x < baseImage.getWidth() - 1; x++) {
             for (int y = 0; y < baseImage.getHeight() - 1; y++) {
@@ -34,10 +35,28 @@ public class BlobDetector {
                 pixelStack.push(new Pixel(x, y));
 
                 blobNum++;
+                BlobRegion blobRegion = new BlobRegion(blobNum);
+                blobRegion.minX = x;
+                blobRegion.minY = y;
+                blobRegion.maxX = x;
+                blobRegion.maxY = y;
+                blobRegions.add(blobRegion);
                 while (!pixelStack.empty()) {
                     Pixel currentPixel = pixelStack.pop();
                     // System.out.printf("Popped: %d %d\n", currentPixel.x, currentPixel.y);
                     blobs[currentPixel.x][currentPixel.y] = blobNum;
+                    if (currentPixel.x < blobRegion.minX) {
+                        blobRegion.minX = currentPixel.x;
+                    }
+                    if (currentPixel.y < blobRegion.minY) {
+                        blobRegion.minY = currentPixel.y;
+                    }
+                    if (currentPixel.x > blobRegion.maxX) {
+                        blobRegion.maxX = currentPixel.x;
+                    }
+                    if (currentPixel.y > blobRegion.maxY) {
+                        blobRegion.maxY = currentPixel.y;
+                    }
                     // System.out.println(getAlphaValue(baseImage.getRGB(currentPixel.x, currentPixel.y)));
                     for (int i = currentPixel.x - 1; i <= currentPixel.x + 1; i++) {
                         for (int j = currentPixel.y - 1; j <= currentPixel.y + 1; j++) {
@@ -82,7 +101,7 @@ public class BlobDetector {
         for (int x = 0; x < baseImage.getWidth(); x++) {
             for (int y = 0; y < baseImage.getHeight(); y++) {
                 if (blobs[x][y] == 0) {
-                    outImage.setRGB(x, y, 0xFFFFFFFF);
+                    outImage.setRGB(x, y, 0x00FFFFFF);
                 } else {
                     outImage.setRGB(x, y, blobColors[blobs[x][y]]);
                 }
@@ -91,14 +110,39 @@ public class BlobDetector {
                  */
             }
         }
-        System.out.println("Saving");
+        System.out.println("Saving Full Image");
         try {
             ImageIO.write(outImage, "png", new File("outImage.png"));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println("done saving");
+        System.out.println("Saving Individual Images");
+
+        File directory = new File("blobs");
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        for (BlobRegion region : blobRegions) {
+            BufferedImage regionImage = new BufferedImage(region.maxX - region.minX + 1, region.maxY - region.minY + 1, BufferedImage.TYPE_INT_RGB);
+            for (int x = region.minX; x <= region.maxX; x++) {
+                for (int y = region.minY; y <= region.maxY; y++) {
+                    if (blobs[x][y] != region.blobNum) {
+                        regionImage.setRGB(x - region.minX, y - region.minY, 0x00FFFFFF);
+                    } else {
+                        regionImage.setRGB(x - region.minX, y - region.minY, baseImage.getRGB(x, y));
+                    }
+                }
+            }
+            try {
+                ImageIO.write(regionImage, "png", new File("blobs/blob" + region.blobNum + ".png"));
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Done saving");
     }
 
     private void fillBlob(int x, int y, int num) {
