@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class BlobDetector {
         int blobNum = 0;
 
         ArrayList<BlobRegion> blobRegions = new ArrayList<BlobRegion>();
-        Stack<Pixel> pixelStack = new Stack<Pixel>();
+        Stack<Point> pixelStack = new Stack<Point>();
         for (int x = 0; x < baseImage.getWidth() - 1; x++) {
             for (int y = 0; y < baseImage.getHeight() - 1; y++) {
                 if (blobs[x][y] != 0) {
@@ -32,7 +33,7 @@ public class BlobDetector {
                 /*
                  * For every pixel not part of a blob Add the pixel to a stack While the stack isn't empty, pop off the pixel, mark it as a blob, add its non-transparent neighbors
                  */
-                pixelStack.push(new Pixel(x, y));
+                pixelStack.push(new Point(x, y));
 
                 blobNum++;
                 BlobRegion blobRegion = new BlobRegion(blobNum);
@@ -42,7 +43,7 @@ public class BlobDetector {
                 blobRegion.maxY = y;
                 blobRegions.add(blobRegion);
                 while (!pixelStack.empty()) {
-                    Pixel currentPixel = pixelStack.pop();
+                    Point currentPixel = pixelStack.pop();
                     // System.out.printf("Popped: %d %d\n", currentPixel.x, currentPixel.y);
                     blobs[currentPixel.x][currentPixel.y] = blobNum;
                     if (currentPixel.x < blobRegion.minX) {
@@ -75,7 +76,7 @@ public class BlobDetector {
                             }
 
                             // System.out.printf("Pushing: %d %d\n", i, j);
-                            pixelStack.push(new Pixel(i, j));
+                            pixelStack.push(new Point(i, j));
                         }
                     }
                     // System.exit(1);
