@@ -38,7 +38,7 @@ public class Main extends JFrame implements ActionListener {
         if (arg0.getSource() == loadImageButton) {
             fileChooser.showOpenDialog(Main.this);
             try {
-                imagePanel.updateImage(ImageIO.read(fileChooser.getSelectedFile()));
+                imagePanel.updateImage(Utility.addAlphaChannel(ImageIO.read(fileChooser.getSelectedFile())));
             } catch (IOException e) {
                 e.printStackTrace();
             }
