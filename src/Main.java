@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
+@SuppressWarnings("serial")
 public class Main extends JFrame implements ActionListener {
     JFileChooser fileChooser;
     JButton loadImageButton;

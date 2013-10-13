@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class ImagePanel extends JPanel {
     BufferedImage image;
     BackgroundRemover bR;
