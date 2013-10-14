@@ -146,31 +146,6 @@ public class BlobDetector {
         System.out.println("Done saving");
     }
 
-    private void fillBlob(int x, int y, int num) {
-        if (x < 0 || x >= baseImage.getWidth()) {
-            return;
-        }
-        if (y < 0 || y >= baseImage.getHeight()) {
-            return;
-        }
-        if (getAlphaValue(baseImage.getRGB(x, y)) <= BLOB_THRESHOLD) {
-            return;
-        }
-        if (blobs[x][y] != 0) {
-            return;
-        }
-        System.out.println("b " + x + " " + y);
-        blobs[x][y] = num;
-        fillBlob(x - 1, y - 1, num);
-        fillBlob(x - 1, y, num);
-        fillBlob(x - 1, y + 1, num);
-        fillBlob(x, y - 1, num);
-        fillBlob(x, y + 1, num);
-        fillBlob(x + 1, y - 1, num);
-        fillBlob(x + 1, y, num);
-        fillBlob(x + 1, y + 1, num);
-    }
-
     public int getAlphaValue(int pixel) {
         return (pixel >> 24) & 0xFF;
     }
