@@ -15,9 +15,13 @@ Pipeline:
     Pre-processing (thresholding)
         Background subtraction
             User selects sample pixels in the background and then foreground
+                UI will prompt the user to select sample pixels
             These sampled pixels are used to construct two convex hulls (QuickHull3D), one for the foreground and one for the background
             Set the alpha value of each pixel to the proportion of the distances to the foreground and background volumes
+                determine whether a point is inside or outside of a convex hull
+                calculate the distance to a convex hull
             Set the RGB value of each pixel to the closest foreground color in 3D color space
+                find the closest point on a convex hull
     Feature extraction (blob detection, boundary points, text recognition)
         Blob Detection (MC, NO)
             We created an iterative flood fill to mark each piece as a blob.
