@@ -1,17 +1,10 @@
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
+import java.util.LinkedList;
 import javax.swing.JFrame;
 
 @SuppressWarnings("serial")
-public class Main extends JFrame implements ActionListener {
-    JFileChooser fileChooser;
-    JButton loadImageButton;
-    ImagePanel imagePanel;
+public class Main extends JFrame implements Listener {
+    LinkedList<Step> steps = new LinkedList<Step>();
 
     public static void main(String[] args) {
         new Main();
@@ -19,29 +12,27 @@ public class Main extends JFrame implements ActionListener {
 
     public Main() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
 
-        loadImageButton = new JButton("Load image...");
-        imagePanel = new ImagePanel();
-
-        getContentPane().add(loadImageButton, BorderLayout.NORTH);
-        getContentPane().add(imagePanel, BorderLayout.CENTER);
-        pack();
-
-        loadImageButton.addActionListener(this);
-        fileChooser = new JFileChooser(System.getProperty("user.dir"));
+        steps.add(null);
+        steps.add(new LoadImageStep(this));
+        steps.add(new BackgroundSubtractionStep(this));
 
         setVisible(true);
+
+        update(null, null);
     }
 
-    public void actionPerformed(ActionEvent arg0) {
-        if (arg0.getSource() == loadImageButton) {
-            fileChooser.showOpenDialog(Main.this);
-            try {
-                imagePanel.updateImage(Utility.addAlphaChannel(ImageIO.read(fileChooser.getSelectedFile())));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    @Override
+    public void update(Object source, Object data) {
+        if (steps.peek() != null) {
+            remove(steps.peek());
+        }
+        steps.remove();
+        if (steps.size() > 0) {
+            setLayout(new BorderLayout());
+            getContentPane().add(steps.peek());
+            steps.peek().begin(data);
+            pack();
         }
     }
 }
