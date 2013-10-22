@@ -71,6 +71,7 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
             backgroundColors.clear();
             break;
         case KeyEvent.VK_ENTER:
+            // TODO use a Future to prevent GUI from hanging
             subtractBackground();
             break;
         }
