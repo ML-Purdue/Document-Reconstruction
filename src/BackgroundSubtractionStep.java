@@ -10,7 +10,8 @@ import java.util.HashSet;
 
 @SuppressWarnings("serial")
 public class BackgroundSubtractionStep extends Step implements MouseMotionListener, KeyListener {
-    BufferedImage image;
+    BufferedImage originalImage;
+    BufferedImage processedImage;
     HashSet<Color> foregroundColors = new HashSet<Color>();
     HashSet<Color> backgroundColors = new HashSet<Color>();
 
@@ -24,15 +25,16 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
 
     @Override
     public void begin(Object input) {
-        image = (BufferedImage) input;
-        setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+        originalImage = (BufferedImage) input;
+        processedImage = Utility.addAlphaChannel(originalImage);
+        setPreferredSize(new Dimension(originalImage.getWidth(), originalImage.getHeight()));
         // TODO listener.update(this, output);
     }
 
     @Override
     public void paint(Graphics g) {
-        if (image != null) {
-            g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
+        if (processedImage != null) {
+            g.drawImage(processedImage, 0, 0, processedImage.getWidth(), processedImage.getHeight(), null);
         }
     }
 
@@ -40,10 +42,10 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
     public void mouseDragged(MouseEvent arg0) {
         switch (arg0.getButton()) {
         case MouseEvent.BUTTON1:
-            foregroundColors.add(new Color(image.getRGB(arg0.getX(), arg0.getY())));
+            foregroundColors.add(new Color(originalImage.getRGB(arg0.getX(), arg0.getY())));
             break;
         case MouseEvent.BUTTON2:
-            backgroundColors.add(new Color(image.getRGB(arg0.getX(), arg0.getY())));
+            backgroundColors.add(new Color(originalImage.getRGB(arg0.getX(), arg0.getY())));
         }
     }
 
