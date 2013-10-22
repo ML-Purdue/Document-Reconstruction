@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import quickhull3d.Point3d;
+import quickhull3d.QuickHull3D;
 
 public class Utility {
     public static BufferedImage addAlphaChannel(BufferedImage originalImage) {
@@ -18,5 +19,22 @@ public class Utility {
 
     public static Color Point3dToColor(Point3d point) {
         return new Color((int) (255 * point.x), (int) (255 * point.y), (int) (255 * point.z));
+    }
+
+    public static boolean pointInHull(Point3d point, QuickHull3D hull) {
+        Point3d[] vertices = hull.getVertices();
+        int[][] faces = hull.getFaces();
+        Triangle[] triangles = new Triangle[faces.length];
+        for (int i = 0; i < faces.length; i++) {
+            triangles[i] = new Triangle(vertices[faces[i][0]], vertices[faces[i][1]], vertices[faces[i][2]]);
+        }
+
+        for (Triangle triangle : triangles) {
+            if (triangle.side(point) == Triangle.Side.FRONT) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
