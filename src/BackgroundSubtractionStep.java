@@ -160,6 +160,10 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
     }
 
     private Point3d processColor(Point3d point, QuickHull3D backgroundHull, QuickHull3D foregroundHull) {
+        if (Utility.pointInHull(point, foregroundHull)) {
+            return point;
+        }
+
         Point3d[] foregroundVertices = foregroundHull.getVertices();
         double nearestDistance = Double.POSITIVE_INFINITY;
         Point3d nearestPoint = null;
