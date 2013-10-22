@@ -16,6 +16,7 @@ import quickhull3d.QuickHull3D;
 public class BackgroundSubtractionStep extends Step implements MouseMotionListener, KeyListener, MouseListener {
     BufferedImage originalImage;
     BufferedImage processedImage;
+    BufferedImage displayImage;
     HashSet<Color> foregroundColors = new HashSet<Color>();
     HashSet<Color> backgroundColors = new HashSet<Color>();
     boolean mouseLeftDown = false;
@@ -34,6 +35,7 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
     public void begin(Object input) {
         originalImage = (BufferedImage) input;
         processedImage = Utility.addAlphaChannel(originalImage);
+        displayImage = originalImage;
         setPreferredSize(new Dimension(originalImage.getWidth(), originalImage.getHeight()));
         // TODO listener.update(this, output);
     }
@@ -42,8 +44,8 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
     public void paint(Graphics g) {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
-        if (processedImage != null) {
-            g.drawImage(processedImage, 0, 0, processedImage.getWidth(), processedImage.getHeight(), null);
+        if (displayImage != null) {
+            g.drawImage(displayImage, 0, 0, displayImage.getWidth(), displayImage.getHeight(), null);
         }
     }
 
@@ -73,6 +75,14 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         case KeyEvent.VK_ENTER:
             // TODO use a Future to prevent GUI from hanging
             subtractBackground();
+            break;
+        case KeyEvent.VK_O:
+            displayImage = originalImage;
+            repaint();
+            break;
+        case KeyEvent.VK_P:
+            displayImage = processedImage;
+            repaint();
             break;
         }
     }
@@ -116,6 +126,8 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
                 processedImage.setRGB(x, y, color.getRGB());
             }
         }
+
+        displayImage = processedImage;
 
         repaint();
     }
