@@ -121,6 +121,12 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
     }
 
     private double processAlpha(Point3d point, QuickHull3D backgroundHull, QuickHull3D foregroundHull) {
+        if (Utility.pointInHull(point, foregroundHull)) {
+            return 1;
+        } else if (Utility.pointInHull(point, backgroundHull)) {
+            return 0;
+        }
+
         Point3d[] foregroundVertices = foregroundHull.getVertices();
         Point3d[] backgroundVertices = backgroundHull.getVertices();
 
