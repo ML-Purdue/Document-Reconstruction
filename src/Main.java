@@ -12,13 +12,13 @@ public class Main extends JFrame implements Listener {
     public Main() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        steps.add(null);
         steps.add(new LoadImageStep(this));
         steps.add(new BackgroundSubtractionStep(this));
 
-        setVisible(true);
-
+        steps.add(0, null);
         update(null, null);
+
+        setVisible(true);
     }
 
     @Override
