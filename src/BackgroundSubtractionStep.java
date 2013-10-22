@@ -7,7 +7,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashSet;
+import quickhull3d.Point3d;
+import quickhull3d.QuickHull3D;
 
 @SuppressWarnings("serial")
 public class BackgroundSubtractionStep extends Step implements MouseMotionListener, KeyListener, MouseListener {
@@ -72,6 +75,15 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
     }
 
     private void subtractBackground() {
+        Point3d[] backgroundPoints = new Point3d[backgroundColors.size()];
+        ArrayList<Color> backgroundColorsList = new ArrayList<Color>(backgroundColors);
+        for (int i = 0; i < backgroundColorsList.size(); i++) {
+            Color color = backgroundColorsList.get(i);
+            backgroundPoints[i] = new Point3d(color.getRed() / 255.0, color.getGreen() / 255.0, color.getBlue() / 255.0);
+        }
+        QuickHull3D hull = new QuickHull3D(backgroundPoints);
+        Point3d[] vertices = hull.getVertices();
+        int[][] faces = hull.getFaces();
         repaint();
     }
 
