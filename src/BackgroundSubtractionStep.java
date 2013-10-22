@@ -79,7 +79,7 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         ArrayList<Color> backgroundColorsList = new ArrayList<Color>(backgroundColors);
         for (int i = 0; i < backgroundColorsList.size(); i++) {
             Color color = backgroundColorsList.get(i);
-            backgroundPoints[i] = new Point3d(color.getRed() / 255.0, color.getGreen() / 255.0, color.getBlue() / 255.0);
+            backgroundPoints[i] = Utility.colorToPoint3d(color);
         }
         QuickHull3D hull = new QuickHull3D(backgroundPoints);
         Point3d[] vertices = hull.getVertices();
