@@ -40,6 +40,8 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
 
     @Override
     public void paint(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, getWidth(), getHeight());
         if (processedImage != null) {
             g.drawImage(processedImage, 0, 0, processedImage.getWidth(), processedImage.getHeight(), null);
         }
