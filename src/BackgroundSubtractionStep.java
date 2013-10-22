@@ -11,7 +11,6 @@ import java.util.HashSet;
 @SuppressWarnings("serial")
 public class BackgroundSubtractionStep extends Step implements MouseMotionListener, KeyListener {
     BufferedImage image;
-    HashSet<Color> selectedColors = new HashSet<Color>();
     HashSet<Color> foregroundColors = new HashSet<Color>();
     HashSet<Color> backgroundColors = new HashSet<Color>();
 
@@ -39,7 +38,13 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
 
     @Override
     public void mouseDragged(MouseEvent arg0) {
-        selectedColors.add(new Color(image.getRGB(arg0.getX(), arg0.getY())));
+        switch (arg0.getButton()) {
+        case MouseEvent.BUTTON1:
+            foregroundColors.add(new Color(image.getRGB(arg0.getX(), arg0.getY())));
+            break;
+        case MouseEvent.BUTTON2:
+            backgroundColors.add(new Color(image.getRGB(arg0.getX(), arg0.getY())));
+        }
     }
 
     @Override
@@ -50,10 +55,10 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_F:
-            foregroundColors = new HashSet<Color>(selectedColors);
+            foregroundColors.clear();
             break;
         case KeyEvent.VK_B:
-            backgroundColors = new HashSet<Color>(selectedColors);
+            backgroundColors.clear();
             break;
         }
     }
