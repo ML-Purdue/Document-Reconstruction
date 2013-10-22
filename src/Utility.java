@@ -15,4 +15,8 @@ public class Utility {
     public static Point3d colorToPoint3d(Color color) {
         return new Point3d(color.getRed() / 255.0, color.getGreen() / 255.0, color.getBlue() / 255.0);
     }
+
+    public static Color Point3dToColor(Point3d point) {
+        return new Color((int) (255 * point.x), (int) (255 * point.y), (int) (255 * point.z));
+    }
 }
