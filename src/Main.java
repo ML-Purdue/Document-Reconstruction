@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.util.LinkedList;
 import javax.swing.JFrame;
 
@@ -29,7 +28,6 @@ public class Main extends JFrame implements Listener {
         }
         steps.remove();
         if (steps.size() > 0) {
-            setLayout(new BorderLayout());
             getContentPane().add(steps.peek());
             steps.peek().begin(data);
             pack();
