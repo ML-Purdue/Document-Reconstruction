@@ -95,7 +95,36 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         Point3d[] foregroundVertices = foregroundHull.getVertices();
         int[][] foregroundFaces = foregroundHull.getFaces();
 
+        Point3d[][] processedImagePoints = new Point3d[processedImage.getWidth()][processedImage.getHeight()];
+        for (int y = 0; y < processedImagePoints[0].length; y++) {
+            for (int x = 0; x < processedImagePoints.length; x++) {
+                Point3d point = Utility.colorToPoint3d(new Color(originalImage.getRGB(x, y)));
+                processedImagePoints[x][y] = processColor(point, backgroundHull, foregroundHull);
+            }
+        }
+
+        for (int y = 0; y < processedImage.getHeight(); y++) {
+            for (int x = 0; x < processedImage.getWidth(); x++) {
+                processedImage.setRGB(x, y, Utility.Point3dToColor(processedImagePoints[x][y]).getRGB());
+            }
+        }
+
         repaint();
+    }
+
+    private Point3d processColor(Point3d point, QuickHull3D backgroundHull, QuickHull3D foregroundHull) {
+        Point3d[] foregroundVertices = foregroundHull.getVertices();
+        double nearestDistance = Double.POSITIVE_INFINITY;
+        Point3d nearestPoint = null;
+
+        for (int i = 0; i < foregroundVertices.length; i++) {
+            if (point.distance(foregroundVertices[i]) < nearestDistance) {
+                nearestDistance = point.distance(foregroundVertices[i]);
+                nearestPoint = new Point3d(foregroundVertices[i]);
+            }
+        }
+
+        return nearestPoint;
     }
 
     @Override
