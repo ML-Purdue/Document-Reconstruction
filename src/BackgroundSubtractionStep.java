@@ -96,20 +96,46 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         int[][] foregroundFaces = foregroundHull.getFaces();
 
         Point3d[][] processedImagePoints = new Point3d[processedImage.getWidth()][processedImage.getHeight()];
+        double[][] processedImageAlphas = new double[processedImage.getWidth()][processedImage.getHeight()];
         for (int y = 0; y < processedImagePoints[0].length; y++) {
             for (int x = 0; x < processedImagePoints.length; x++) {
                 Point3d point = Utility.colorToPoint3d(new Color(originalImage.getRGB(x, y)));
                 processedImagePoints[x][y] = processColor(point, backgroundHull, foregroundHull);
+                processedImageAlphas[x][y] = processAlpha(point, backgroundHull, foregroundHull);
             }
         }
 
         for (int y = 0; y < processedImage.getHeight(); y++) {
             for (int x = 0; x < processedImage.getWidth(); x++) {
-                processedImage.setRGB(x, y, Utility.Point3dToColor(processedImagePoints[x][y]).getRGB());
+                Color color = Utility.Point3dToColor(processedImagePoints[x][y]);
+                // System.out.print(processedImageAlphas[x][y]);
+                color = new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (255 * processedImageAlphas[x][y]));
+                processedImage.setRGB(x, y, color.getRGB());
             }
         }
 
         repaint();
+    }
+
+    private double processAlpha(Point3d point, QuickHull3D backgroundHull, QuickHull3D foregroundHull) {
+        Point3d[] foregroundVertices = foregroundHull.getVertices();
+        Point3d[] backgroundVertices = backgroundHull.getVertices();
+
+        double a = Double.POSITIVE_INFINITY;
+        for (int i = 0; i < foregroundVertices.length; i++) {
+            if (point.distance(foregroundVertices[i]) < a) {
+                a = point.distance(foregroundVertices[i]);
+            }
+        }
+
+        double b = Double.POSITIVE_INFINITY;
+        for (int i = 0; i < backgroundVertices.length; i++) {
+            if (point.distance(backgroundVertices[i]) < b) {
+                b = point.distance(backgroundVertices[i]);
+            }
+        }
+
+        return b / (a + b);
     }
 
     private Point3d processColor(Point3d point, QuickHull3D backgroundHull, QuickHull3D foregroundHull) {
