@@ -60,7 +60,14 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         case KeyEvent.VK_B:
             backgroundColors.clear();
             break;
+        case KeyEvent.VK_ENTER:
+            subtractBackground();
+            break;
         }
+    }
+
+    private void subtractBackground() {
+        repaint();
     }
 
     @Override
