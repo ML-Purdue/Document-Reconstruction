@@ -88,6 +88,15 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
     }
 
     private void subtractBackground() {
+        if (backgroundColors.size() < 4) {
+            System.out.printf("Selected only %d/%d background colors.\n", backgroundColors.size(), 4);
+            return;
+        }
+        if (foregroundColors.size() < 4) {
+            System.out.printf("Selected only %d/%d foreground colors.\n", foregroundColors.size(), 4);
+            return;
+        }
+
         Point3d[] backgroundPoints = new Point3d[backgroundColors.size()];
         ArrayList<Color> backgroundColorsList = new ArrayList<Color>(backgroundColors);
         for (int i = 0; i < backgroundColorsList.size(); i++) {
