@@ -106,8 +106,6 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         }
         QuickHull3D backgroundHull = new QuickHull3D(backgroundPoints);
         backgroundHull.triangulate();
-        Point3d[] backgroundVertices = backgroundHull.getVertices();
-        int[][] backgroundFaces = backgroundHull.getFaces();
 
         Point3d[] foregroundPoints = new Point3d[foregroundColors.size()];
         ArrayList<Color> foregroundColorsList = new ArrayList<Color>(foregroundColors);
@@ -117,8 +115,6 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         }
         QuickHull3D foregroundHull = new QuickHull3D(foregroundPoints);
         foregroundHull.triangulate();
-        Point3d[] foregroundVertices = foregroundHull.getVertices();
-        int[][] foregroundFaces = foregroundHull.getFaces();
 
         Point3d[][] processedImagePoints = new Point3d[processedImage.getWidth()][processedImage.getHeight()];
         double[][] processedImageAlphas = new double[processedImage.getWidth()][processedImage.getHeight()];
