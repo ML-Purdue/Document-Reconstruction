@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import quickhull3d.Point3d;
 import quickhull3d.QuickHull3D;
+import quickhull3d.Vector3d;
 
 @SuppressWarnings("serial")
 public class BackgroundSubtractionStep extends Step implements MouseMotionListener, KeyListener, MouseListener {
@@ -104,6 +105,7 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
             backgroundPoints[i] = Utility.colorToPoint3d(color);
         }
         QuickHull3D backgroundHull = new QuickHull3D(backgroundPoints);
+        backgroundHull.triangulate();
         Point3d[] backgroundVertices = backgroundHull.getVertices();
         int[][] backgroundFaces = backgroundHull.getFaces();
 
@@ -114,6 +116,7 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
             foregroundPoints[i] = Utility.colorToPoint3d(color);
         }
         QuickHull3D foregroundHull = new QuickHull3D(foregroundPoints);
+        foregroundHull.triangulate();
         Point3d[] foregroundVertices = foregroundHull.getVertices();
         int[][] foregroundFaces = foregroundHull.getFaces();
 
@@ -151,17 +154,38 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         Point3d[] foregroundVertices = foregroundHull.getVertices();
         Point3d[] backgroundVertices = backgroundHull.getVertices();
 
+        int[][] foregroundHullTriangles = foregroundHull.getFaces();
+        Triangle[] foregroundTriangles = new Triangle[foregroundHullTriangles.length];
+        for (int i = 0; i < foregroundHullTriangles.length; i++) {
+            int[] x = foregroundHullTriangles[i];
+            Vector3d a = new Vector3d(foregroundVertices[x[0]]);
+            Vector3d b = new Vector3d(foregroundVertices[x[1]]);
+            Vector3d c = new Vector3d(foregroundVertices[x[2]]);
+            foregroundTriangles[i] = new Triangle(a, b, c);
+        }
+        int[][] backgroundHullTriangles = backgroundHull.getFaces();
+        Triangle[] backgroundTriangles = new Triangle[backgroundHullTriangles.length];
+        for (int i = 0; i < backgroundHullTriangles.length; i++) {
+            int[] x = backgroundHullTriangles[i];
+            Vector3d a = new Vector3d(backgroundVertices[x[0]]);
+            Vector3d b = new Vector3d(backgroundVertices[x[1]]);
+            Vector3d c = new Vector3d(backgroundVertices[x[2]]);
+            backgroundTriangles[i] = new Triangle(a, b, c);
+        }
+
         double a = Double.POSITIVE_INFINITY;
         for (int i = 0; i < foregroundVertices.length; i++) {
-            if (point.distance(foregroundVertices[i]) < a) {
-                a = point.distance(foregroundVertices[i]);
+            double d = point.distance(foregroundTriangles[i].nearestPoint(point));
+            if (d < a) {
+                a = d;
             }
         }
 
         double b = Double.POSITIVE_INFINITY;
         for (int i = 0; i < backgroundVertices.length; i++) {
-            if (point.distance(backgroundVertices[i]) < b) {
-                b = point.distance(backgroundVertices[i]);
+            double d = point.distance(backgroundTriangles[i].nearestPoint(point));
+            if (d < b) {
+                b = d;
             }
         }
 
@@ -173,14 +197,24 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
             return point;
         }
 
-        Point3d[] foregroundVertices = foregroundHull.getVertices();
+        Point3d[] vertices = foregroundHull.getVertices();
+        int[][] hullTriangles = foregroundHull.getFaces();
+        Triangle[] triangles = new Triangle[hullTriangles.length];
+        for (int i = 0; i < hullTriangles.length; i++) {
+            int[] x = hullTriangles[i];
+            Vector3d a = new Vector3d(vertices[x[0]]);
+            Vector3d b = new Vector3d(vertices[x[1]]);
+            Vector3d c = new Vector3d(vertices[x[2]]);
+            triangles[i] = new Triangle(a, b, c);
+        }
         double nearestDistance = Double.POSITIVE_INFINITY;
         Point3d nearestPoint = null;
 
-        for (int i = 0; i < foregroundVertices.length; i++) {
-            if (point.distance(foregroundVertices[i]) < nearestDistance) {
-                nearestDistance = point.distance(foregroundVertices[i]);
-                nearestPoint = new Point3d(foregroundVertices[i]);
+        for (int i = 0; i < triangles.length; i++) {
+            Point3d nearest = triangles[i].nearestPoint(point);
+            if (point.distance(nearest) < nearestDistance) {
+                nearestDistance = point.distance(nearest);
+                nearestPoint = nearest;
             }
         }
 
