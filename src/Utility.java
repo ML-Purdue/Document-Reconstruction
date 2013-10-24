@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import quickhull3d.Point3d;
@@ -36,5 +37,15 @@ public class Utility {
         }
 
         return true;
+    }
+
+    public static void drawChecker(Graphics graphics, int width, int height, int size, Color colorLeft, Color colorRight) {
+        for (int top = 0; top < height; top += size) {
+            for (int left = 0; left < width; left += size) {
+                Color color = (top + left) % 2 == 0 ? colorLeft : colorRight;
+                graphics.setColor(color);
+                graphics.fillRect(left, top, width, height);
+            }
+        }
     }
 }
