@@ -10,8 +10,8 @@ import javax.imageio.ImageIO;
 
 public class BlobDetectionStep extends Step {
     private BufferedImage baseImage;
-    private BufferedImage processedImage;
-    private BufferedImage displayImage;
+    // private BufferedImage processedImage;
+    // private BufferedImage displayImage;
     private int[][] blobs;
     public static final int BLOB_THRESHOLD = 0;
 
@@ -24,10 +24,11 @@ public class BlobDetectionStep extends Step {
 
     public void begin(Object input) {
         baseImage = (BufferedImage) input;
-        processedImage = Utility.addAlphaChannel(baseImage);
-        displayImage = baseImage;
+        baseImage = Utility.addAlphaChannel(baseImage);
         setPreferredSize(new Dimension(baseImage.getWidth(), baseImage.getHeight()));
+        blobs = new int[baseImage.getWidth()][baseImage.getHeight()];
         detectBlobs();
+        System.out.println("finished");
         // TODO listener.update(this, output);
     }
 
