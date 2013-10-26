@@ -97,6 +97,10 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         case KeyEvent.VK_U:
             listener.update(this, processedImage);
             break;
+        case KeyEvent.VK_E:
+            displayImage = Utility.showExtremeAlphas(processedImage);
+            repaint();
+            break;
         }
     }
 
