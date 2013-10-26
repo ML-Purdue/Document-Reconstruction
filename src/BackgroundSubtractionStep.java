@@ -26,6 +26,7 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
     Point mousePosition = null;
     int magnifierSize = 64;
     int magnification = 4;
+    Point magnifierOffset = new Point(magnifierSize / 2 + 10, magnifierSize / 2 + 10);
 
     public BackgroundSubtractionStep(Listener listener) {
         super(listener);
@@ -52,17 +53,20 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
             if (mousePosition != null) {
                 int x = mousePosition.x;
                 int y = mousePosition.y;
+                Point o = magnifierOffset;
                 int r = magnifierSize / 2;
                 int d = r / magnification;
-                int dx1 = x - r;
-                int dy1 = y - r;
-                int dx2 = x + r;
-                int dy2 = y + r;
+                int dx1 = x + o.x - r;
+                int dy1 = y + o.y - r;
+                int dx2 = x + o.x + r;
+                int dy2 = y + o.y + r;
                 int sx1 = x - d;
                 int sy1 = y - d;
                 int sx2 = x + d;
                 int sy2 = y + d;
                 g.drawImage(displayImage, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+                g.setColor(Color.RED);
+                g.drawRect(dx1 + r - magnification, dy1 + r - magnification, magnification, magnification);
             }
         }
     }
