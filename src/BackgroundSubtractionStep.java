@@ -52,8 +52,17 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
             if (mousePosition != null) {
                 int x = mousePosition.x;
                 int y = mousePosition.y;
-                int magnifiedSize = magnifierSize / magnification;
-                g.drawImage(displayImage, x - magnifierSize / 2, y - magnifierSize / 2, x + magnifierSize / 2, y + magnifierSize / 2, x - magnifiedSize / 2, y - magnifiedSize / 2, x + magnifiedSize / 2, y + magnifiedSize / 2, null);
+                int r = magnifierSize / 2;
+                int d = r / magnification;
+                int dx1 = x - r;
+                int dy1 = y - r;
+                int dx2 = x + r;
+                int dy2 = y + r;
+                int sx1 = x - d;
+                int sy1 = y - d;
+                int sx2 = x + d;
+                int sy2 = y + d;
+                g.drawImage(displayImage, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
             }
         }
     }
