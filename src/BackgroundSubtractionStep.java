@@ -24,6 +24,8 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
     boolean mouseLeftDown = false;
     boolean mouseRightDown = false;
     Point mousePosition = null;
+    int magnifierSize = 64;
+    int magnification = 4;
 
     public BackgroundSubtractionStep(Listener listener) {
         super(listener);
@@ -40,7 +42,6 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         processedImage = Utility.addAlphaChannel(originalImage);
         displayImage = originalImage;
         setPreferredSize(new Dimension(originalImage.getWidth(), originalImage.getHeight()));
-        // TODO listener.update(this, output);
     }
 
     @Override
@@ -49,7 +50,10 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         if (displayImage != null) {
             g.drawImage(displayImage, 0, 0, displayImage.getWidth(), displayImage.getHeight(), null);
             if (mousePosition != null) {
-                g.drawImage(displayImage, mousePosition.x - 32, mousePosition.y - 32, mousePosition.x + 32, mousePosition.y + 32, mousePosition.x - 4, mousePosition.y - 4, mousePosition.x + 4, mousePosition.y + 4, null);
+                int x = mousePosition.x;
+                int y = mousePosition.y;
+                int magnifiedSize = magnifierSize / magnification;
+                g.drawImage(displayImage, x - magnifierSize / 2, y - magnifierSize / 2, x + magnifierSize / 2, y + magnifierSize / 2, x - magnifiedSize / 2, y - magnifiedSize / 2, x + magnifiedSize / 2, y + magnifiedSize / 2, null);
             }
         }
     }
@@ -93,6 +97,13 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
             break;
         case KeyEvent.VK_P:
             displayImage = processedImage;
+            repaint();
+            break;
+        case KeyEvent.VK_U:
+            listener.update(this, processedImage);
+            break;
+        case KeyEvent.VK_E:
+            displayImage = Utility.showExtremeAlphas(processedImage);
             repaint();
             break;
         }
