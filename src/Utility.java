@@ -40,11 +40,11 @@ public class Utility {
     }
 
     public static void drawChecker(Graphics graphics, int width, int height, int size, Color colorLeft, Color colorRight) {
-        for (int top = 0; top < height; top += size) {
-            for (int left = 0; left < width; left += size) {
-                Color color = (top + left) % 2 == 0 ? colorLeft : colorRight;
+        for (int iy = 0; iy * size <= height; iy++) {
+            for (int ix = 0; ix * size <= width; ix++) {
+                Color color = (iy + ix) % 2 == 0 ? colorLeft : colorRight;
                 graphics.setColor(color);
-                graphics.fillRect(left, top, width, height);
+                graphics.fillRect(ix * size, iy * size, size, size);
             }
         }
     }
