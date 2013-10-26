@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -22,6 +23,7 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
     HashSet<Color> backgroundColors = new HashSet<Color>();
     boolean mouseLeftDown = false;
     boolean mouseRightDown = false;
+    Point mousePosition = null;
 
     public BackgroundSubtractionStep(Listener listener) {
         super(listener);
@@ -46,21 +48,30 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         Utility.drawChecker(g, getWidth(), getHeight(), 5, Color.LIGHT_GRAY, Color.DARK_GRAY);
         if (displayImage != null) {
             g.drawImage(displayImage, 0, 0, displayImage.getWidth(), displayImage.getHeight(), null);
+            if (mousePosition != null) {
+                g.drawImage(displayImage, mousePosition.x - 32, mousePosition.y - 32, mousePosition.x + 32, mousePosition.y + 32, mousePosition.x - 4, mousePosition.y - 4, mousePosition.x + 4, mousePosition.y + 4, null);
+            }
         }
     }
 
     @Override
     public void mouseDragged(MouseEvent arg0) {
+        mousePosition = arg0.getPoint();
+
         if (mouseLeftDown == true) {
             foregroundColors.add(new Color(originalImage.getRGB(arg0.getX(), arg0.getY())));
         }
         if (mouseRightDown == true) {
             backgroundColors.add(new Color(originalImage.getRGB(arg0.getX(), arg0.getY())));
         }
+
+        repaint();
     }
 
     @Override
     public void mouseMoved(MouseEvent arg0) {
+        mousePosition = arg0.getPoint();
+        repaint();
     }
 
     @Override
