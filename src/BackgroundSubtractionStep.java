@@ -40,7 +40,6 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         processedImage = Utility.addAlphaChannel(originalImage);
         displayImage = originalImage;
         setPreferredSize(new Dimension(originalImage.getWidth(), originalImage.getHeight()));
-        // TODO listener.update(this, output);
     }
 
     @Override
@@ -94,6 +93,9 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
         case KeyEvent.VK_P:
             displayImage = processedImage;
             repaint();
+            break;
+        case KeyEvent.VK_U:
+            listener.update(this, processedImage);
             break;
         }
     }
