@@ -49,19 +49,13 @@ public class Utility {
         }
     }
 
-    public static BufferedImage showExtremeAlphas(BufferedImage image) {
+    public static BufferedImage showAlpha(BufferedImage image) {
         BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        int opaqueColor = Color.RED.getRGB();
-        int transparentColor = Color.BLUE.getRGB();
 
         for (int iy = 0; iy < image.getHeight(); iy++) {
             for (int ix = 0; ix < image.getWidth(); ix++) {
                 int alpha = new Color(image.getRGB(ix, iy), true).getAlpha();
-                if (alpha == 0) {
-                    newImage.setRGB(ix, iy, transparentColor);
-                } else if (alpha == 255) {
-                    newImage.setRGB(ix, iy, opaqueColor);
-                }
+                newImage.setRGB(ix, iy, new Color(alpha, alpha, alpha).getRGB());
             }
         }
 
