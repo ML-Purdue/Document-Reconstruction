@@ -61,4 +61,8 @@ public class Utility {
 
         return newImage;
     }
+
+    public static double clamp(double minimum, double value, double maximum) {
+        return Math.min(Math.max(value, minimum), maximum);
+    }
 }
