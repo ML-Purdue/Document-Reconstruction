@@ -65,4 +65,23 @@ public class Utility {
     public static double clamp(double minimum, double value, double maximum) {
         return Math.min(Math.max(value, minimum), maximum);
     }
+
+    public static BufferedImage contrastAlpha(BufferedImage image, double contrast) {
+        BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        for (int iy = 0; iy < image.getHeight(); iy++) {
+            for (int ix = 0; ix < image.getWidth(); ix++) {
+                Color rgb = new Color(image.getRGB(ix, iy), true);
+                int r = rgb.getRed();
+                int g = rgb.getGreen();
+                int b = rgb.getBlue();
+                double alpha = new Color(image.getRGB(ix, iy), true).getAlpha() / 255.0;
+                double newAlpha = clamp(0, (alpha - 0.5) * (1 + contrast) + 0.5, 1);
+                Color newRGB = new Color(r, g, b, (int) (255 * newAlpha));
+                newImage.setRGB(ix, iy, newRGB.getRGB());
+            }
+        }
+
+        return newImage;
+    }
 }
