@@ -2,10 +2,19 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import quickhull3d.Point3d;
 import quickhull3d.QuickHull3D;
 
 public class Utility {
+    public static BufferedImage deepCopy(BufferedImage image) {
+        ColorModel colorModel = image.getColorModel();
+        boolean isAlphaPremultiplied = colorModel.isAlphaPremultiplied();
+        WritableRaster raster = image.copyData(null);
+        return new BufferedImage(colorModel, raster, isAlphaPremultiplied, null);
+    }
+
     public static BufferedImage addAlphaChannel(BufferedImage originalImage) {
         BufferedImage newImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D newImageGraphics = newImage.createGraphics();
