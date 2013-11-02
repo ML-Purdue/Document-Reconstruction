@@ -1,12 +1,10 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
-import javax.imageio.ImageIO;
 
 public class BlobDetectionStep extends Step {
     private BufferedImage baseImage;
@@ -14,6 +12,7 @@ public class BlobDetectionStep extends Step {
     // private BufferedImage displayImage;
     private int[][] blobs;
     public static final int BLOB_THRESHOLD = 0;
+    BufferedImage processedImage;
 
     public BlobDetectionStep(Listener listener) {
         super(listener);
@@ -30,6 +29,14 @@ public class BlobDetectionStep extends Step {
         detectBlobs();
         System.out.println("finished");
         // TODO listener.update(this, output);
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        Utility.drawChecker(g, getWidth(), getHeight(), 10, Color.LIGHT_GRAY, Color.DARK_GRAY);
+        if (processedImage != null) {
+            g.drawImage(processedImage, 0, 0, processedImage.getWidth(), processedImage.getHeight(), null);
+        }
     }
 
     public void detectBlobs() {
@@ -126,19 +133,6 @@ public class BlobDetectionStep extends Step {
                  */
             }
         }
-        System.out.println("Saving Full Image");
-        try {
-            ImageIO.write(outImage, "png", new File("outImage.png"));
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        System.out.println("Saving Individual Images");
-
-        File directory = new File("blobs");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
         for (BlobRegion region : blobRegions) {
             BufferedImage regionImage = new BufferedImage(region.maxX - region.minX + 1, region.maxY - region.minY + 1, BufferedImage.TYPE_INT_ARGB);
             for (int x = region.minX; x <= region.maxX; x++) {
@@ -150,15 +144,10 @@ public class BlobDetectionStep extends Step {
                     }
                 }
             }
-            try {
-                ImageIO.write(regionImage, "png", new File("blobs/blob" + region.blobNum + ".png"));
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
 
-        System.out.println("Done saving");
+        processedImage = outImage;
+        repaint();
     }
 
     public int getAlphaValue(int pixel) {
