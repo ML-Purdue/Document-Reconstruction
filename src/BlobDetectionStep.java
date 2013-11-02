@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -26,9 +27,10 @@ public class BlobDetectionStep extends Step {
         baseImage = Utility.addAlphaChannel(baseImage);
         setPreferredSize(new Dimension(baseImage.getWidth(), baseImage.getHeight()));
         blobs = new int[baseImage.getWidth()][baseImage.getHeight()];
-        detectBlobs();
+        ArrayList<Piece> output = detectBlobs();
         System.out.println("finished");
-        // TODO listener.update(this, output);
+        System.out.println("Total Blobs Found: " + output.size());
+        listener.update(this, output);
     }
 
     @Override
@@ -39,7 +41,7 @@ public class BlobDetectionStep extends Step {
         }
     }
 
-    public void detectBlobs() {
+    public ArrayList<Piece> detectBlobs() {
         int blobNum = 0;
 
         ArrayList<BlobRegion> blobRegions = new ArrayList<BlobRegion>();
@@ -133,6 +135,7 @@ public class BlobDetectionStep extends Step {
                  */
             }
         }
+        ArrayList<Piece> blobList = new ArrayList<Piece>();
         for (BlobRegion region : blobRegions) {
             BufferedImage regionImage = new BufferedImage(region.maxX - region.minX + 1, region.maxY - region.minY + 1, BufferedImage.TYPE_INT_ARGB);
             for (int x = region.minX; x <= region.maxX; x++) {
@@ -144,10 +147,14 @@ public class BlobDetectionStep extends Step {
                     }
                 }
             }
+            Point2D.Double pos = new Point2D.Double(region.minX + (regionImage.getWidth() / 2.0), region.minY + (regionImage.getWidth() / 2.0));
+            Piece p = new Piece(pos, 0, regionImage);
+            blobList.add(p);
         }
 
         processedImage = outImage;
         repaint();
+        return blobList;
     }
 
     public int getAlphaValue(int pixel) {

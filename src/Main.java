@@ -16,6 +16,7 @@ public class Main extends JFrame implements Listener {
         steps.add(new BackgroundSubtractionStep(this));
         steps.add(new AlphaCleanupStep(this));
         steps.add(new BlobDetectionStep(this));
+        steps.add(new SmallBlobDeletionStep(this));
 
         steps.add(0, null);
         update(null, null);

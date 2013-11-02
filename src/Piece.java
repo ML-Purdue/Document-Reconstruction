@@ -1,14 +1,14 @@
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
-public class Piece extends BufferedImage {
+public class Piece {
     Point2D.Double position;
     double rotation;
+    BufferedImage image;
 
-    public Piece(int width, int height, int imageType) {
-        super(width, height, imageType);
-
-        position = new Point2D.Double(0, 0);
-        rotation = 0;
+    public Piece(Point2D.Double pos, double rot, BufferedImage i) {
+        position = pos;
+        rotation = rot;
+        image = i;
     }
 }
