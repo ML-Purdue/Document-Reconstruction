@@ -93,4 +93,16 @@ public class Utility {
 
         return newImage;
     }
+
+    public static int getSumOfPixels(BufferedImage image) {
+        int sum = 0;
+        for (int x = 0; x < image.getWidth(); x++) {
+            for (int y = 0; y < image.getHeight(); y++) {
+                int rgb = image.getRGB(x, y);
+                int red = (rgb >> 16) & 0xFF;
+                sum += red;
+            }
+        }
+        return sum;
+    }
 }
