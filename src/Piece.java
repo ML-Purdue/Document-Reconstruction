@@ -11,4 +11,10 @@ public class Piece {
         rotation = rot;
         image = i;
     }
+
+    public Piece(Piece piece) {
+        position = new Point2D.Double(piece.position.x, piece.position.y);
+        rotation = piece.rotation;
+        image = piece.image;
+    }
 }
