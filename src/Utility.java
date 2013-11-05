@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
+import java.util.List;
 import quickhull3d.Point3d;
 import quickhull3d.QuickHull3D;
 
@@ -104,5 +105,18 @@ public class Utility {
             }
         }
         return sum;
+    }
+
+    public static void drawLayout(List<Piece> layout, BufferedImage sandbox) {
+        // Graphics g = sandbox.getGraphics();
+        // for (Piece piece : layout) {
+        // g.drawImage(new ImageOperations.ImgOpBuilder(piece.image).rotate(piece.rotation).filter(), (int) piece.position.x, (int) piece.position.y, null);
+        // }
+        Graphics2D g = (Graphics2D) sandbox.getGraphics();
+        for (Piece piece : layout) {
+            g.rotate(-piece.rotation);
+            g.drawImage(piece.image, (int) piece.position.x, (int) piece.position.y, null);
+            g.rotate(piece.rotation);
+        }
     }
 }
