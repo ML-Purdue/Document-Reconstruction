@@ -12,8 +12,8 @@ OpenCV for Java (CW)
 Generate an N-tuple for each edge and cluster them in N-space. (CC)
 
 Pipeline:
-    Load image (done)
-    Pre-processing (thresholding)
+    Load image
+    Pre-processing
         Background subtraction
             User selects sample pixels in the background and then foreground
                 UI will prompt the user to select sample pixels
@@ -23,8 +23,10 @@ Pipeline:
                 calculate the distance to a convex hull
             Set the RGB value of each pixel to the closest foreground color in 3D color space
                 find the closest point on a convex hull
-    Feature extraction (blob detection, boundary points, text recognition)
-        Blob Detection (MC, NO)
+        Alpha cleanup
+            Increase the contrast of the alpha channel to remove some faint alpha noise
+    Feature extraction
+        Blob Detection
             We created an iterative flood fill to mark each piece as a blob.
             Each blob has its own id number, which will be used for saving.
             Requires the input image to be marked with alpha values for
@@ -35,5 +37,13 @@ Pipeline:
             of int arrays which store the minX,minY,maxX,maxY for each blob.  Use this to
             save the blobs.
 		Blob Detection done for the most part
-    Iterative algorithms (random transforms, minimizing error functions, collisions and sliding)
-    Display (done)
+    Small blob removal
+        Remove blobs with area less than a threshold percent of the total area
+    Solvers
+        Error functions
+            Sum of pixels of image filtered through edge detection
+            Area of bounding rectangle of all pieces, plus weight times area of overlap
+        Random shuffling solver
+            Translate and rotate pieces randomly while keeping track of the best layout and minimizing an error function
+            Slow convergeance, many false positives
+    Display
