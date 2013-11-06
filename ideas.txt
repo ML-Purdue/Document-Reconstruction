@@ -46,4 +46,9 @@ Pipeline:
         Random shuffling solver
             Translate and rotate pieces randomly while keeping track of the best layout and minimizing an error function
             Slow convergeance, many false positives
+        Edge paths through color space
+            Walk the edges of the pieces, and store the average color of the surrounding pixels for each pixel
+            Construct a closed path in 3D color space for each piece
+            Determine the similarity of all pairs of pieces by the length and closeness of matching parts of their paths
+            Create a complete weighted graph of the pieces, where each edge represents the similarity of two paths
     Display
