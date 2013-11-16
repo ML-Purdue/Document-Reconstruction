@@ -17,4 +17,7 @@ public class Piece {
         rotation = piece.rotation;
         image = piece.image;
     }
+
+    public Piece() {
+    }
 }
