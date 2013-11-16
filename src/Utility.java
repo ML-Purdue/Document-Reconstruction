@@ -157,7 +157,8 @@ public class Utility {
                     continue;
                 }
                 /*
-                 * For every pixel not part of a blob Add the pixel to a stack While the stack isn't empty, pop off the pixel, mark it as a blob, add its non-transparent neighbors
+                 * For every pixel not part of a blob Add the pixel to a stack
+                 * While the stack isn't empty, pop off the pixel, mark it as a blob, add its non-transparent neighbors
                  */
                 pixelStack.push(new Point(x, y));
 
@@ -170,7 +171,6 @@ public class Utility {
                 blobRegions.add(blobRegion);
                 while (!pixelStack.empty()) {
                     Point currentPixel = pixelStack.pop();
-                    // System.out.printf("Popped: %d %d\n", currentPixel.x, currentPixel.y);
                     blobs[currentPixel.x][currentPixel.y] = blobNum;
                     if (currentPixel.x < blobRegion.minX) {
                         blobRegion.minX = currentPixel.x;
@@ -184,16 +184,12 @@ public class Utility {
                     if (currentPixel.y > blobRegion.maxY) {
                         blobRegion.maxY = currentPixel.y;
                     }
-                    // System.out.println(getAlphaValue(baseImage.getRGB(currentPixel.x, currentPixel.y)));
                     for (int i = currentPixel.x - 1; i <= currentPixel.x + 1; i++) {
                         for (int j = currentPixel.y - 1; j <= currentPixel.y + 1; j++) {
-                            // System.out.printf("dsa: %d %d\n", i, j);
                             if (i < 0 || j < 0 || i >= baseImage.getWidth() || j >= baseImage.getHeight()) {
                                 continue;
                             }
-                            // System.out.println("dsaf");
                             if (blobs[i][j] != 0) {
-                                // System.out.println((i == currentPixel.x) + " " + (j == currentPixel.y) + " " + getAlphaValue(baseImage.getRGB(i, j)));
                                 continue;
                             }
 
@@ -201,20 +197,10 @@ public class Utility {
                                 continue;
                             }
 
-                            // System.out.printf("Pushing: %d %d\n", i, j);
                             pixelStack.push(new Point(i, j));
                         }
                     }
-                    // System.exit(1);
                 }
-
-                /*
-                 * Iterative Method, creates too many blobs // Check neighbors // If neighbor is not transparent, set to highest neighbor number // If neighbors == transparent, set own blob color int highestNeighbor = 0; for (int i = x - 1; i < x + 1; i++) { for (int j = y - 1; j < y + 1; j++) { if (blobs[i][j] > highestNeighbor) { highestNeighbor = blobs[i][j]; } } } if (highestNeighbor > 0) { blobs[x][y] = highestNeighbor; } else { blobNum++; blobs[x][y] = blobNum; }
-                 */
-
-                /*
-                 * //Recursive (stack overflow) if (blobs[x][y] != 0) continue; if (getAlphaValue(baseImage.getRGB(x, y)) <= BLOB_THRESHOLD) continue; System.out.println(x + " " + y); fillBlob(x, y, blobNum); blobNum++;
-                 */
             }
         }
         System.out.println((blobNum) + " blobs found");
