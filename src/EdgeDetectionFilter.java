@@ -42,15 +42,15 @@ public class EdgeDetectionFilter {
             for (int y = 0; y < dest.getHeight(); y++) {
                 double total = 0;
                 int count = 0;
-                Color currentColor = new Color(src.getRGB(x, y));
+                Color currentColor = new Color(src.getRGB(x, y), true);
                 for (int i = x - 1; i <= x + 1; i++) {
                     for (int j = y - 1; j <= y + 1; j++) {
                         if (i < 0 || i >= dest.getWidth() || j < 0 || j >= dest.getHeight() || (i == x && j == y)) {
                             continue;
                         } else {
                             count++;
-                            Color temp = new Color(src.getRGB(i, j));
-                            total += (Math.abs(currentColor.getRed() - temp.getRed()) + Math.abs(currentColor.getBlue() - temp.getBlue()) + Math.abs(currentColor.getGreen() - temp.getGreen())) / 3.0;
+                            Color temp = new Color(src.getRGB(i, j), true);
+                            total += (Math.abs(currentColor.getRed() - temp.getRed()) + Math.abs(currentColor.getBlue() - temp.getBlue()) + Math.abs(currentColor.getGreen() - temp.getGreen()) + Math.abs(currentColor.getAlpha() - temp.getAlpha())) / 4.0;
                         }
                     }
                 }
