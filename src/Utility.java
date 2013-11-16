@@ -119,4 +119,21 @@ public class Utility {
             g.rotate(piece.rotation);
         }
     }
+
+    /**
+     * Returns the distance from point (x, y) to line y=mx + b
+     * 
+     * @param x
+     * @param y
+     * @param m
+     * @param b
+     * @return
+     */
+    public static double distancePointToLine(double x, double y, double m, double b) {
+        // Formula from http://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+        double part1 = Math.pow((x + m * y - m * b) / (m * m + 1) - x, 2);
+        double part2 = Math.pow((m * (x + m * y - m * b) / (m * m + 1)) + b - y, 2);
+        double result = Math.sqrt(part1 + part2);
+        return result;
+    }
 }
