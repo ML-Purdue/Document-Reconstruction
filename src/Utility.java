@@ -248,6 +248,123 @@ public class Utility {
         double slope = slopeTop / slopeBottom;
         double[] array = { slope, sumY - (slope * sumX) };
         return array;
+    }
+
+    public static List<Point2D.Double> perimeter(boolean[][] blob) {
+        List<Point2D.Double> l = new ArrayList<Point2D.Double>();
+        outerloop: for (int i = 0; i < blob.length; i++) {
+            for (int j = 0; j < blob.length; j++) {
+                // first element you run into that is part of the blob must be on the perimeter
+                if (blob[i][j] == true) {
+                    l.add(new Point2D.Double((double) j, (double) i));
+                    break outerloop;
+                }
+            }
+        }
+
+        Point2D.Double newP = null;
+        Point2D.Double curP = l.get(0);
+        int x = (int) curP.x;
+        int y = (int) curP.y;
+        int dir = 2; // 0 for up, 1 for up and right, 2 for right, 3 for down and right, 4 for down, 5 for down and left, 6 for left, 7 for up and left
+        while (true) {
+            if (newP != null) {
+                if (newP.getX() == l.get(0).getX() && newP.getY() == l.get(0).getY()) {
+                    break;
+                }
+                l.add(newP);
+                curP = newP;
+                x = (int) curP.getX();
+                y = (int) curP.getY();
+                dir = ((dir + 4) % 8) + 1;
+                newP = null;
+            }
+            switch (dir) {
+            // for each case, make sure the current position is not on the edge of the image.
+            // If it isn't, check the new element in the current direction
+            case 0:
+                if (y > 0 && isPerimeter(x, y - 1, blob)) {
+                    newP = new Point2D.Double((double) x, (double) (y - 1));
+                }
+                break;
+
+            case 1:
+                if (x < blob.length - 1 && y > 0 && isPerimeter(x + 1, y - 1, blob)) {
+                    newP = new Point2D.Double((double) (x + 1), (double) (y - 1));
+                }
+                break;
+
+            case 2:
+                if (x < blob.length - 1 && isPerimeter(x + 1, y, blob)) {
+                    newP = new Point2D.Double((double) (x + 1), (double) y);
+                }
+                break;
+
+            case 3:
+                if (x < blob.length - 1 && y < blob.length - 1 && isPerimeter(x + 1, y + 1, blob)) {
+                    newP = new Point2D.Double((double) (x + 1), (double) (y + 1));
+                }
+                break;
+
+            case 4:
+                if (y < blob.length - 1 && isPerimeter(x, y + 1, blob)) {
+                    newP = new Point2D.Double((double) x, (double) (y + 1));
+                }
+                break;
+
+            case 5:
+                if (x > 0 && y < blob.length - 1 && isPerimeter(x - 1, y + 1, blob)) {
+                    newP = new Point2D.Double((double) (x - 1), (double) (y + 1));
+                }
+                break;
+
+            case 6:
+                if (x > 0 && isPerimeter(x - 1, y, blob)) {
+                    newP = new Point2D.Double((double) (x - 1), (double) y);
+                }
+                break;
+
+            case 7:
+                if (x > 0 && y > 0 && isPerimeter(x - 1, y - 1, blob)) {
+                    newP = new Point2D.Double((double) (x - 1), (double) (y - 1));
+                }
+                break;
+
+            default:
+                break;
+            }
+
+            // update the direction if you don't have a new piece to add to the perimeter
+            if (newP == null) {
+                dir++;
+                dir = dir % 8;
+            }
+        }
+
+        l.add(newP);
+        return l;
+    }
+
+    static boolean isPerimeter(int i, int j, boolean[][] blob) {
+        // if the blob has a false value up, down, left, or right from the element, then it is part of the perimeter
+        if (blob[j][i] == true) {
+            if (j == 0 || j == blob.length - 1 || i == 0 || i == blob.length - 1) {
+                return true;
+            }
+            if (j > 0 && blob[j - 1][i] == false) {
+                return true;
+            }
+            if (j < blob.length - 1 && blob[j + 1][i] == false) {
+                return true;
+            }
+            if (i > 0 && blob[j][i - 1] == false) {
+                return true;
+            }
+            if (i < blob.length - 1 && blob[j][i + 1] == false) {
+                return true;
+            }
+        }
+        return false;
 
     }
 }
