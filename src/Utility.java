@@ -223,20 +223,6 @@ public class Utility {
             Color randomColor = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
             blobColors[i] = randomColor.getRGB();
         }
-        System.out.println("Creating outImage");
-        BufferedImage outImage = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        for (int x = 0; x < baseImage.getWidth(); x++) {
-            for (int y = 0; y < baseImage.getHeight(); y++) {
-                if (blobs[x][y] == 0) {
-                    outImage.setRGB(x, y, 0x00FFFFFF);
-                } else {
-                    outImage.setRGB(x, y, blobColors[blobs[x][y]]);
-                }
-                /*
-                 * if (blobs[x][y] == 1) { System.out.printf("x: %d, y: %d\n", x, y); }
-                 */
-            }
-        }
         ArrayList<Piece> blobList = new ArrayList<Piece>();
         for (BlobRegion region : blobRegions) {
             BufferedImage regionImage = new BufferedImage(region.maxX - region.minX + 1, region.maxY - region.minY + 1, BufferedImage.TYPE_INT_ARGB);
