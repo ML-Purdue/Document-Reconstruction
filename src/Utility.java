@@ -260,4 +260,27 @@ public class Utility {
     public static int getAlphaValue(int pixel) {
         return (pixel >> 24) & 0xFF;
     }
+
+    public double[] lineOfBestFit(List<Point2D.Double> points) {
+        // a double array of 2 elements is returned, where the first element is the slope, and the second is the y-intercept
+        double sumX = 0.0;
+        double sumY = 0.0;
+        double sumProd = 0.0;
+        double sumSquareX = 0.0;
+        double slopeTop = 0.0;
+        double slopeBottom = 0.0;
+        int n = points.size();
+        for (int i = 0; i < n; i++) {
+            sumX += points.get(i).getX();
+            sumY += points.get(i).getY();
+            sumSquareX += points.get(i).getX() * points.get(i).getX();
+            sumProd += points.get(i).getX() * points.get(i).getY();
+        }
+        slopeTop = (n * sumProd) - (sumX * sumY);
+        slopeBottom = (n * sumSquareX) - (sumX * sumX);
+        double slope = slopeTop / slopeBottom;
+        double[] array = { slope, sumY - (slope * sumX) };
+        return array;
+
+    }
 }
