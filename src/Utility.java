@@ -141,6 +141,91 @@ public class Utility {
         return result;
     }
 
+    public static boolean[][] getLargestBlob(BufferedImage baseImage, int blob_threshold) {
+        int blobNum = 0;
+
+        int[][] blobs = new int[baseImage.getWidth()][baseImage.getHeight()];
+
+        ArrayList<BlobRegion> blobRegions = new ArrayList<BlobRegion>();
+        Stack<Point> pixelStack = new Stack<Point>();
+        for (int x = 0; x < baseImage.getWidth() - 1; x++) {
+            for (int y = 0; y < baseImage.getHeight() - 1; y++) {
+                if (blobs[x][y] != 0) {
+                    continue;
+                }
+                if (getAlphaValue(baseImage.getRGB(x, y)) <= blob_threshold) {
+                    continue;
+                }
+                /*
+                 * For every pixel not part of a blob Add the pixel to a stack
+                 * While the stack isn't empty, pop off the pixel, mark it as a blob, add its non-transparent neighbors
+                 */
+                pixelStack.push(new Point(x, y));
+
+                blobNum++;
+                BlobRegion blobRegion = new BlobRegion(blobNum);
+                blobRegion.minX = x;
+                blobRegion.minY = y;
+                blobRegion.maxX = x;
+                blobRegion.maxY = y;
+                blobRegions.add(blobRegion);
+                while (!pixelStack.empty()) {
+                    Point currentPixel = pixelStack.pop();
+                    blobs[currentPixel.x][currentPixel.y] = blobNum;
+                    if (currentPixel.x < blobRegion.minX) {
+                        blobRegion.minX = currentPixel.x;
+                    }
+                    if (currentPixel.y < blobRegion.minY) {
+                        blobRegion.minY = currentPixel.y;
+                    }
+                    if (currentPixel.x > blobRegion.maxX) {
+                        blobRegion.maxX = currentPixel.x;
+                    }
+                    if (currentPixel.y > blobRegion.maxY) {
+                        blobRegion.maxY = currentPixel.y;
+                    }
+                    for (int i = currentPixel.x - 1; i <= currentPixel.x + 1; i++) {
+                        for (int j = currentPixel.y - 1; j <= currentPixel.y + 1; j++) {
+                            if (i < 0 || j < 0 || i >= baseImage.getWidth() || j >= baseImage.getHeight()) {
+                                continue;
+                            }
+                            if (blobs[i][j] != 0) {
+                                continue;
+                            }
+
+                            if (getAlphaValue(baseImage.getRGB(i, j)) <= blob_threshold) {
+                                continue;
+                            }
+
+                            pixelStack.push(new Point(i, j));
+                        }
+                    }
+                }
+            }
+        }
+
+        BlobRegion largestBlobRegion = blobRegions.get(0);
+        for (BlobRegion blobRegion : blobRegions) {
+            int largestArea = (largestBlobRegion.maxX - largestBlobRegion.minX) * (largestBlobRegion.maxY - largestBlobRegion.minY);
+            int thisArea = (blobRegion.maxX - blobRegion.minX) * (blobRegion.maxY - blobRegion.minY);
+            if (thisArea < largestArea) {
+                largestBlobRegion = blobRegion;
+            }
+        }
+
+        boolean[][] blob = new boolean[largestBlobRegion.maxX - largestBlobRegion.minX + 1][largestBlobRegion.maxY - largestBlobRegion.minY + 1];
+        for (int x = largestBlobRegion.minX; x <= largestBlobRegion.maxX; x++) {
+            for (int y = largestBlobRegion.minY; y <= largestBlobRegion.maxY; y++) {
+                int i = x - largestBlobRegion.minX;
+                int j = y - largestBlobRegion.minY;
+                System.out.printf("i %d j %d blob (%d, %d) blobs (%d, %d)\n", i, j, blob.length, blob[0].length, blobs.length, blobs[0].length);
+                blob[i][j] = blobs[x][y] == largestBlobRegion.blobNum;
+            }
+        }
+
+        return blob;
+    }
+
     public static List<Piece> detectBlobs(BufferedImage baseImage, int blob_threshold) {
         int blobNum = 0;
 
