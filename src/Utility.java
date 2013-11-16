@@ -218,11 +218,6 @@ public class Utility {
             }
         }
         System.out.println((blobNum) + " blobs found");
-        int[] blobColors = new int[blobNum + 1];
-        for (int i = 0; i < blobColors.length; i++) {
-            Color randomColor = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
-            blobColors[i] = randomColor.getRGB();
-        }
         ArrayList<Piece> blobList = new ArrayList<Piece>();
         for (BlobRegion region : blobRegions) {
             BufferedImage regionImage = new BufferedImage(region.maxX - region.minX + 1, region.maxY - region.minY + 1, BufferedImage.TYPE_INT_ARGB);
