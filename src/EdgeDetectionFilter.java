@@ -1,38 +1,8 @@
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Panel;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 
 public class EdgeDetectionFilter {
-    public static void main(String[] args) {
-        JFileChooser fc = new JFileChooser("Choose image");
-        switch (fc.showOpenDialog(null)) {
-        case JFileChooser.APPROVE_OPTION:
-            JFrame frame = new JFrame("Display image");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            try {
-                BufferedImage in = ImageIO.read(fc.getSelectedFile());
-                final BufferedImage img = getEdgeDetectionFilter(in);
-                // final BufferedImage img = detectEdges(in);
-                frame.getContentPane().add(new Panel() {
-                    @Override
-                    public void paint(Graphics g) {
-                        g.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), null);
-                    }
-                });
-                frame.setSize(1000, 1000);
-                frame.setVisible(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            break;
-        }
-    }
-
     public static BufferedImage getEdgeDetectionFilter(BufferedImage src) {
         BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics g = dest.getGraphics();

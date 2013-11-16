@@ -149,16 +149,4 @@ public class BlobDetector {
     public int getAlphaValue(int pixel) {
         return (pixel >> 24) & 0xFF;
     }
-
-    public static void main(String[] args) {
-        BufferedImage thresholded = null;
-        try {
-            thresholded = ImageIO.read(new File("thresholded2.png"));
-            BlobDetector blobber = new BlobDetector(thresholded);
-            blobber.detectBlobs();
-        } catch (Exception e) {
-            System.out.println(e);
-            e.printStackTrace();
-        }
-    }
 }
