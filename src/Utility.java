@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -9,6 +10,8 @@ import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import quickhull3d.Point3d;
 import quickhull3d.QuickHull3D;
 
@@ -224,6 +227,26 @@ public class Utility {
         }
 
         return blob;
+    }
+
+    public static void show(BufferedImage image) {
+        JFrame frame = new JFrame();
+        frame.add(new ImagePanel(image));
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    public static class ImagePanel extends JPanel {
+        private BufferedImage image;
+
+        public ImagePanel(BufferedImage image) {
+            this.image = image;
+            setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+        }
+
+        public void paint(Graphics g) {
+            g.drawImage(image, 0, 0, null);
+        }
     }
 
     public static List<Piece> detectBlobs(BufferedImage baseImage, int blob_threshold) {
