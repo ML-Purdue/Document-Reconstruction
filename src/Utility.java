@@ -455,6 +455,9 @@ public class Utility {
 
     static boolean isPerimeter(int i, int j, boolean[][] blob) {
         // if the blob has a false value up, down, left, or right from the element, then it is part of the perimeter
+        if (i >= blob[0].length || j >= blob.length) {
+            return false;
+        }
         if (blob[j][i] == true) {
             if (j == 0 || j == blob.length - 1 || i == 0 || i == blob.length - 1) {
                 return true;
