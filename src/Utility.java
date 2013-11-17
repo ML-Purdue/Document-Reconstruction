@@ -361,7 +361,7 @@ public class Utility {
     public static List<Point> perimeter(boolean[][] blob) {
         List<Point> l = new ArrayList<Point>();
         outerloop: for (int i = 0; i < blob.length; i++) {
-            for (int j = 0; j < blob.length; j++) {
+            for (int j = 0; j < blob[0].length; j++) {
                 // first element you run into that is part of the blob must be on the perimeter
                 if (blob[i][j] == true) {
                     l.add(new Point(i, j));
@@ -409,19 +409,19 @@ public class Utility {
                 break;
 
             case 3:
-                if (x < blob.length - 1 && y < blob.length - 1 && isPerimeter(x + 1, y + 1, blob)) {
+                if (x < blob.length - 1 && y < blob[0].length - 1 && isPerimeter(x + 1, y + 1, blob)) {
                     newP = new Point(x + 1, y + 1);
                 }
                 break;
 
             case 4:
-                if (y < blob.length - 1 && isPerimeter(x, y + 1, blob)) {
+                if (y < blob[0].length - 1 && isPerimeter(x, y + 1, blob)) {
                     newP = new Point(x, y + 1);
                 }
                 break;
 
             case 5:
-                if (x > 0 && y < blob.length - 1 && isPerimeter(x - 1, y + 1, blob)) {
+                if (x > 0 && y < blob[0].length - 1 && isPerimeter(x - 1, y + 1, blob)) {
                     newP = new Point(x - 1, y + 1);
                 }
                 break;
@@ -455,23 +455,23 @@ public class Utility {
 
     static boolean isPerimeter(int i, int j, boolean[][] blob) {
         // if the blob has a false value up, down, left, or right from the element, then it is part of the perimeter
-        if (i >= blob[0].length || j >= blob.length) {
+        if (i >= blob.length || j >= blob[0].length) {
             return false;
         }
-        if (blob[j][i] == true) {
-            if (j == 0 || j == blob.length - 1 || i == 0 || i == blob.length - 1) {
+        if (blob[i][j] == true) {
+            if (i == 0 || i == blob.length - 1 || j == 0 || j == blob[0].length - 1) {
                 return true;
             }
-            if (j > 0 && blob[j - 1][i] == false) {
+            if (i > 0 && blob[i - 1][j] == false) {
                 return true;
             }
-            if (j < blob.length - 1 && blob[j + 1][i] == false) {
+            if (i < blob.length - 1 && blob[i + 1][j] == false) {
                 return true;
             }
-            if (i > 0 && blob[j][i - 1] == false) {
+            if (j > 0 && blob[i][j - 1] == false) {
                 return true;
             }
-            if (i < blob.length - 1 && blob[j][i + 1] == false) {
+            if (j < blob[0].length - 1 && blob[i][j + 1] == false) {
                 return true;
             }
         }
