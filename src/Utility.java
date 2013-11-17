@@ -509,4 +509,16 @@ public class Utility {
     public static int mod(int a, int n) {
         return a < 0 ? (a % n + n) % n : a % n;
     }
+
+    public static List<Double> smooth(List<Double> unsmoothList, int window) {
+        List<Double> smoothList = new ArrayList<Double>();
+        for (int i = 0; i < unsmoothList.size(); i++) {
+            double sum = 0;
+            for (int j = -window / 2; j < window / 2; j++) {
+                sum += unsmoothList.get(mod(i + j, unsmoothList.size()));
+            }
+            smoothList.add(sum / window);
+        }
+        return smoothList;
+    }
 }
