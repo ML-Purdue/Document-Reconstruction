@@ -1,5 +1,6 @@
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,11 @@ public class CurvatureSolverStep extends Step implements Runnable {
         // construct lists of edges
         List<List<Double>> curvatures = new ArrayList<List<Double>>();
         for (int i = 0; i < layout.size(); i++) {
-            curvatures.add(Utility.smooth(Utility.getCurvature(Utility.perimeter(Utility.getLargestBlob(layout.get(i).image, 128))), 5));
+            boolean[][] blob = Utility.getLargestBlob(layout.get(i).image, 128);
+            List<Point> perimeter = Utility.perimeter(blob);
+            List<Double> rawCurvature = Utility.getCurvature(perimeter);
+            List<Double> curvature = Utility.smooth(rawCurvature, 5);
+            curvatures.add(curvature);
         }
 
         // TODO
