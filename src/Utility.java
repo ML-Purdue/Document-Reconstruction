@@ -19,6 +19,7 @@ import quickhull3d.QuickHull3D;
 public class Utility {
     static int nextFrameX = 0;
     static int nextFrameY = 0;
+    static int maxRowHeight = 0;
 
     public static BufferedImage deepCopy(BufferedImage image) {
         ColorModel colorModel = image.getColorModel();
@@ -237,10 +238,12 @@ public class Utility {
         frame.add(new ImagePanel(deepCopy(image)));
         frame.pack();
         frame.setLocation(nextFrameX, nextFrameY);
+        maxRowHeight = Math.max(maxRowHeight, image.getHeight());
         nextFrameX += image.getWidth() + 10;
         if (nextFrameX > Toolkit.getDefaultToolkit().getScreenSize().width) {
             nextFrameX = 0;
-            nextFrameY += image.getHeight();
+            nextFrameY += maxRowHeight + 25;
+            maxRowHeight = 0;
             if (nextFrameY > Toolkit.getDefaultToolkit().getScreenSize().height) {
                 nextFrameY = 0;
             }
