@@ -32,7 +32,12 @@ public class CurvatureSolverStep extends Step implements Runnable {
             curvatures.add(Utility.getCurvature(Utility.perimeter(Utility.getLargestBlob(layout.get(i).image, 128))));
         }
 
-        // TODO match pieces together starting with an island
+        // TODO
+        // pick arbitrary piece as the island
+        // while the island does not contain all pieces:
+        // - find the best match between the island and any other piece using graph comparison of curvatures
+        // - combine the island with the best match by moving and rotating it into place
+        // - draw the best match on the island
     }
 
     @Override
