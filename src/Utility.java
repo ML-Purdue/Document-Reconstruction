@@ -375,11 +375,11 @@ public class Utility {
 
     public static List<Point> perimeter(boolean[][] blob) {
         List<Point> l = new ArrayList<Point>();
-        outerloop: for (int i = 0; i < blob.length; i++) {
-            for (int j = 0; j < blob[0].length; j++) {
+        outerloop: for (int y = 0; y < blob[0].length; y++) {
+            for (int x = 0; x < blob.length; x++) {
                 // first element you run into that is part of the blob must be on the perimeter
-                if (blob[i][j] == true) {
-                    l.add(new Point(i, j));
+                if (blob[x][y] == true) {
+                    l.add(new Point(x, y));
                     break outerloop;
                 }
             }
