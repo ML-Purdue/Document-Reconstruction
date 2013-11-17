@@ -3,6 +3,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -16,6 +17,9 @@ import quickhull3d.Point3d;
 import quickhull3d.QuickHull3D;
 
 public class Utility {
+    static int nextFrameX = 0;
+    static int nextFrameY = 0;
+
     public static BufferedImage deepCopy(BufferedImage image) {
         ColorModel colorModel = image.getColorModel();
         boolean isAlphaPremultiplied = colorModel.isAlphaPremultiplied();
@@ -232,6 +236,15 @@ public class Utility {
         JFrame frame = new JFrame();
         frame.add(new ImagePanel(deepCopy(image)));
         frame.pack();
+        frame.setLocation(nextFrameX, nextFrameY);
+        nextFrameX += image.getWidth() + 10;
+        if (nextFrameX > Toolkit.getDefaultToolkit().getScreenSize().width) {
+            nextFrameX = 0;
+            nextFrameY += image.getHeight();
+            if (nextFrameY > Toolkit.getDefaultToolkit().getScreenSize().height) {
+                nextFrameY = 0;
+            }
+        }
         frame.setVisible(true);
     }
 
