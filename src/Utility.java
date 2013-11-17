@@ -336,7 +336,7 @@ public class Utility {
         return (pixel >> 24) & 0xFF;
     }
 
-    public double[] lineOfBestFit(List<Point2D.Double> points) {
+    public static double[] lineOfBestFit(List<Point2D.Double> points) {
         // a double array of 2 elements is returned, where the first element is the slope, and the second is the y-intercept
         double sumX = 0.0;
         double sumY = 0.0;
