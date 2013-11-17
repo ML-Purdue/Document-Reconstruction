@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -35,6 +36,23 @@ public class CurvatureSolverStep extends Step implements Runnable {
             List<Double> rawCurvature = Utility.getCurvature(perimeter);
             List<Double> curvature = Utility.smooth(rawCurvature, 5);
             curvatures.add(curvature);
+
+            Utility.show(layout.get(i).image);
+            BufferedImage image = new BufferedImage(layout.get(i).image.getWidth(), layout.get(i).image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            double mag = Double.NEGATIVE_INFINITY;
+            for (int j = 0; j < curvature.size(); j++) {
+                mag = Math.max(mag, Math.abs(curvature.get(j)));
+            }
+            for (int j = 0; j < perimeter.size(); j++) {
+                int value = Math.abs((int) (255 / mag * curvature.get(j)));
+                System.out.println(curvature.get(j) + " max " + mag);
+                if (curvature.get(j) > 0) {
+                    image.setRGB(perimeter.get(j).x, perimeter.get(j).y, new Color(value, 0, 0).getRGB());
+                } else {
+                    image.setRGB(perimeter.get(j).x, perimeter.get(j).y, new Color(0, value, 0).getRGB());
+                }
+            }
+            Utility.show(image);
         }
 
         // TODO
