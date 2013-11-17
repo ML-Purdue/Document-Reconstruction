@@ -448,7 +448,6 @@ public class Utility {
             }
         }
 
-        l.add(newP);
         return l;
     }
 
