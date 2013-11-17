@@ -476,4 +476,37 @@ public class Utility {
         return false;
 
     }
+
+    public static List<Double> getCurvature(List<Point> perimeter) {
+        CircularArrayList<Double> curvature = new CircularArrayList<Double>();
+
+        for (int i = 0; i < perimeter.size(); i++) {
+            Point a = perimeter.get(mod(i - 1, perimeter.size()));
+            Point p = perimeter.get(i);
+            Point b = perimeter.get((i + 1) % perimeter.size());
+            Point2D.Double ab = new Point2D.Double(b.x - a.x, b.y - a.y);
+            Point2D.Double ap = new Point2D.Double(p.x - a.x, p.y - a.y);
+            double ab_mag = Math.sqrt(ab.x * ab.x + ab.y * ab.y);
+            double ap_mag = Math.sqrt(ap.x * ap.x + ap.y * ap.y);
+            if (a.equals(b)) {
+                curvature.add(ap_mag);
+                continue;
+            }
+            Point2D.Double ab_hat = new Point2D.Double(ab.x / ab_mag, ab.y / ab_mag);
+            Point2D.Double ap_hat = new Point2D.Double(ap.x / ap_mag, ap.y / ap_mag);
+            double angle = Math.acos(ab_hat.x * ap_hat.x + ab_hat.y * ap_hat.y);
+            double opposite = Math.sin(angle) * ap_mag;
+            if (ab_hat.x * ap_hat.y - ab_hat.y * ap_hat.x < 0) {
+                opposite = -opposite;
+            }
+
+            curvature.add(opposite);
+        }
+
+        return curvature;
+    }
+
+    public static int mod(int a, int n) {
+        return a < 0 ? (a % n + n) % n : a % n;
+    }
 }
