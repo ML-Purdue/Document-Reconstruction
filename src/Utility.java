@@ -221,7 +221,6 @@ public class Utility {
             for (int y = largestBlobRegion.minY; y <= largestBlobRegion.maxY; y++) {
                 int i = x - largestBlobRegion.minX;
                 int j = y - largestBlobRegion.minY;
-                System.out.printf("i %d j %d blob (%d, %d) blobs (%d, %d)\n", i, j, blob.length, blob[0].length, blobs.length, blobs[0].length);
                 blob[i][j] = blobs[x][y] == largestBlobRegion.blobNum;
             }
         }
