@@ -534,4 +534,14 @@ public class Utility {
         }
         return smoothList;
     }
+
+    public static List<Double> integrate(List<Double> list) {
+        List<Double> integral = new ArrayList<Double>();
+        double value = 0;
+        for (Double d : list) {
+            value += d;
+            integral.add(value);
+        }
+        return integral;
+    }
 }
