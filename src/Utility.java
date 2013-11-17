@@ -526,14 +526,14 @@ public class Utility {
         return a < 0 ? (a % n + n) % n : a % n;
     }
 
-    public static List<Double> smooth(List<Double> unsmoothList, int window) {
+    public static List<Double> smooth(List<Double> unsmoothList, int tail) {
         List<Double> smoothList = new ArrayList<Double>();
         for (int i = 0; i < unsmoothList.size(); i++) {
             double sum = 0;
-            for (int j = -window / 2; j < window / 2; j++) {
-                sum += unsmoothList.get(mod(i + j, unsmoothList.size()));
+            for (int j = -tail; j <= tail; j++) {
+                sum += (double) (tail - Math.abs(j)) / (tail * tail) * unsmoothList.get(mod(i + j, unsmoothList.size()));
             }
-            smoothList.add(sum / window);
+            smoothList.add(sum);
         }
         return smoothList;
     }
