@@ -231,7 +231,7 @@ public class Utility {
 
     public static void show(BufferedImage image) {
         JFrame frame = new JFrame();
-        frame.add(new ImagePanel(image));
+        frame.add(new ImagePanel(deepCopy(image)));
         frame.pack();
         frame.setVisible(true);
     }
