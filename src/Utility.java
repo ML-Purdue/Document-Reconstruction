@@ -544,4 +544,11 @@ public class Utility {
         }
         return integral;
     }
+
+    public static List<Double> shift(List<Double> list, int offset) {
+        List<Double> newList = new ArrayList<Double>();
+        newList.addAll(list.subList((list.size() + offset) % list.size(), list.size()));
+        newList.addAll(list.subList(0, (list.size() + offset) % list.size()));
+        return newList;
+    }
 }
