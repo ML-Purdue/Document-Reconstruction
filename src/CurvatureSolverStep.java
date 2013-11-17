@@ -29,7 +29,7 @@ public class CurvatureSolverStep extends Step implements Runnable {
         // construct lists of edges
         List<List<Double>> curvatures = new ArrayList<List<Double>>();
         for (int i = 0; i < layout.size(); i++) {
-            curvatures.add(Utility.getCurvature(Utility.perimeter(Utility.getLargestBlob(layout.get(i).image, 128))));
+            curvatures.add(Utility.smooth(Utility.getCurvature(Utility.perimeter(Utility.getLargestBlob(layout.get(i).image, 128))), 5));
         }
 
         // TODO
