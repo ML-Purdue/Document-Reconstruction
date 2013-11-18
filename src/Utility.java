@@ -119,6 +119,13 @@ public class Utility {
         return sum;
     }
 
+    public static void drawPiece(Piece piece, BufferedImage sandbox) {
+        Graphics2D g = (Graphics2D) sandbox.getGraphics();
+        g.rotate(-piece.rotation);
+        g.drawImage(piece.image, (int) piece.position.x, (int) piece.position.y, null);
+        g.rotate(piece.rotation);
+    }
+
     public static void drawLayout(List<Piece> layout, BufferedImage sandbox) {
         // Graphics g = sandbox.getGraphics();
         // for (Piece piece : layout) {
