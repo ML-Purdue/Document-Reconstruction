@@ -134,7 +134,7 @@ public class Utility {
         Graphics2D g = (Graphics2D) sandbox.getGraphics();
         for (Piece piece : layout) {
             g.rotate(-piece.rotation);
-            g.drawImage(piece.image, (int) piece.position.x, (int) piece.position.y, null);
+            g.drawImage(piece.image, (int) piece.position.x - piece.image.getWidth() / 2, (int) piece.position.y - piece.image.getHeight() / 2, null);
             g.rotate(piece.rotation);
         }
     }
