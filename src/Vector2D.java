@@ -53,6 +53,10 @@ public class Vector2D extends Point2D.Double {
         return x * other.x + y * other.y;
     }
 
+    public double cross(Vector2D other) {
+        return x * other.y - y * other.x;
+    }
+
     public double angle() {
         return Math.atan2(y, x);
     }
