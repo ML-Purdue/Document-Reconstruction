@@ -66,6 +66,10 @@ public class Vector2D extends Point2D.Double {
         return Math.atan2(y, x);
     }
 
+    public double angleBetween(Vector2D other) {
+        return Math.atan2(cross(other), dot(other));
+    }
+
     public Vector2D rotate(double angle) {
         return new Vector2D(x * Math.cos(angle) - y * Math.sin(angle), x * Math.sin(angle) + y * Math.cos(angle));
     }
