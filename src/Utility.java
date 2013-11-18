@@ -346,7 +346,7 @@ public class Utility {
                     }
                 }
             }
-            Point2D.Double pos = new Point2D.Double(region.minX + (regionImage.getWidth() / 2.0), region.minY + (regionImage.getWidth() / 2.0));
+            Point2D.Double pos = new Point2D.Double(region.minX + (regionImage.getWidth() / 2.0), region.minY + (regionImage.getHeight() / 2.0));
             Piece p = new Piece(pos, 0, regionImage);
             blobList.add(p);
         }
