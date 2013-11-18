@@ -14,15 +14,15 @@ public class Vector2D extends Point2D.Double {
         super(x, y);
     }
 
-    public Vector2D(Vector2D other) {
+    public Vector2D(Point2D.Double other) {
         super(other.x, other.y);
     }
 
-    public Vector2D add(Vector2D other) {
+    public Vector2D add(Point2D.Double other) {
         return new Vector2D(this.x + other.x, this.y + other.y);
     }
 
-    public Vector2D subtract(Vector2D other) {
+    public Vector2D subtract(Point2D.Double other) {
         return new Vector2D(this.x - other.x, this.y - other.y);
     }
 
@@ -49,11 +49,11 @@ public class Vector2D extends Point2D.Double {
         return Math.sqrt(x * x + y * y);
     }
 
-    public double dot(Vector2D other) {
+    public double dot(Point2D.Double other) {
         return x * other.x + y * other.y;
     }
 
-    public double cross(Vector2D other) {
+    public double cross(Point2D.Double other) {
         return x * other.y - y * other.x;
     }
 
@@ -65,15 +65,15 @@ public class Vector2D extends Point2D.Double {
         return new Vector2D(x * Math.cos(angle) - y * Math.sin(angle), x * Math.sin(angle) + y * Math.cos(angle));
     }
 
-    public Vector2D project(Vector2D other) {
+    public Vector2D project(Point2D.Double other) {
         return this.multiply(this.dot(other) / this.dot(this));
     }
 
-    public double component(Vector2D other) {
+    public double component(Point2D.Double other) {
         return this.dot(other) / this.magnitude();
     }
 
-    public Vector2D interpolate(Vector2D other, double t) {
+    public Vector2D interpolate(Point2D.Double other, double t) {
         return this.add(other.subtract(this).multiply(t));
     }
 
