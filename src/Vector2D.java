@@ -74,15 +74,13 @@ public class Vector2D extends Point2D.Double {
     }
 
     public static Vector2D randomInSquare(double lowerLimit, double upperLimit) {
-        return new Vector2D(lowerLimit + random.nextDouble() * (upperLimit - lowerLimit),
-                lowerLimit + random.nextDouble() * (upperLimit - lowerLimit));
+        return new Vector2D(lowerLimit + random.nextDouble() * (upperLimit - lowerLimit), lowerLimit + random.nextDouble() * (upperLimit - lowerLimit));
     }
 
     public static Vector2D randomInCircle(double radius) {
         double angle = 2.0 * Math.PI * random.nextDouble();
         double distance = radius * Math.sqrt(random.nextDouble());
-        return new Vector2D(distance * Math.cos(angle),
-                distance * Math.sin(angle));
+        return new Vector2D(distance * Math.cos(angle), distance * Math.sin(angle));
     }
 
     public String toString() {
