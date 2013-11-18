@@ -30,9 +30,11 @@ public class CurvatureSolverStep extends Step implements Runnable {
         // blob detect at 50%
         // construct lists of edges
         List<List<Double>> curvatures = new ArrayList<List<Double>>();
+        List<List<Point>> perimeters = new ArrayList<List<Point>>();
         for (int i = 0; i < layout.size(); i++) {
             boolean[][] blob = Utility.getLargestBlob(layout.get(i).image, 128);
             List<Point> perimeter = Utility.perimeter(blob);
+            perimeters.add(perimeter);
             List<Double> rawCurvature = Utility.getCurvature(perimeter);
             List<Double> curvature = Utility.smooth(rawCurvature, 5);
             curvatures.add(curvature);
@@ -53,6 +55,23 @@ public class CurvatureSolverStep extends Step implements Runnable {
                 }
             }
             Utility.show(image);
+        }
+
+        for (int i = 0; i < layout.size() - 1; i++) {
+            for (int j = i + 1; j < layout.size(); j++) {
+                Utility.CurvatureMatch match = Utility.matchCurvatures(curvatures.get(i), curvatures.get(j));
+                BufferedImage image = new BufferedImage(layout.get(i).image.getWidth(), layout.get(i).image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                for (int k = 0; k < match.length; k++) {
+                    image.setRGB(perimeters.get(i).get((match.indexA + k) % perimeters.get(i).size()).x, perimeters.get(i).get((match.indexA + k) % perimeters.get(i).size()).y, Color.RED.getRGB());
+                }
+                Utility.show(image);
+                BufferedImage image2 = new BufferedImage(layout.get(j).image.getWidth(), layout.get(j).image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                for (int k = 0; k < match.length; k++) {
+                    image2.setRGB(perimeters.get(j).get((match.indexB + k) % perimeters.get(j).size()).x, perimeters.get(j).get((match.indexB + k) % perimeters.get(j).size()).y, Color.GREEN.getRGB());
+                }
+                Utility.show(image2);
+                System.out.println(match.error);
+            }
         }
 
         // TODO
