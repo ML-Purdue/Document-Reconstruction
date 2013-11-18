@@ -121,9 +121,10 @@ public class Utility {
 
     public static void drawPiece(Piece piece, BufferedImage sandbox) {
         Graphics2D g = (Graphics2D) sandbox.getGraphics();
-        g.rotate(-piece.rotation);
-        g.drawImage(piece.image, (int) piece.position.x, (int) piece.position.y, null);
-        g.rotate(piece.rotation);
+        g.translate(piece.position.x - piece.image.getWidth() / 2, piece.position.y - piece.image.getHeight() / 2);
+        g.rotate(piece.rotation, piece.image.getWidth() / 2, piece.image.getHeight() / 2);
+
+        g.drawImage(piece.image, 0, 0, null);
     }
 
     public static void drawLayout(List<Piece> layout, BufferedImage sandbox) {
