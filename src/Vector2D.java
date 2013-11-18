@@ -74,6 +74,10 @@ public class Vector2D extends Point2D.Double {
         return new Vector2D(x * Math.cos(angle) - y * Math.sin(angle), x * Math.sin(angle) + y * Math.cos(angle));
     }
 
+    public Vector2D rotate(double angle, Vector2D center) {
+        return subtract(center).rotate(angle).add(center);
+    }
+
     public Vector2D project(Point2D.Double other) {
         return this.multiply(this.dot(other) / this.dot(this));
     }
