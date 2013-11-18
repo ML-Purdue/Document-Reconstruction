@@ -554,4 +554,46 @@ public class Utility {
         newList.addAll(list.subList(0, (list.size() + offset) % list.size()));
         return newList;
     }
+
+    public static List<Double> reverse(List<Double> list) {
+        List<Double> t = new ArrayList<Double>(list);
+        list = new ArrayList<Double>();
+        for (int i = t.size() - 1; i >= 0; i--) {
+            list.add(t.get(i));
+        }
+        return list;
+    }
+
+    public static List<Double> negate(List<Double> list) {
+        List<Double> t = new ArrayList<Double>(list);
+        list = new ArrayList<Double>();
+        for (int i = 0; i < t.size(); i++) {
+            list.add(-t.get(i));
+        }
+        return list;
+    }
+
+    public static double sum(List<Double> list) {
+        double sum = 0;
+        for (Double d : list) {
+            sum += d;
+        }
+        return sum;
+    }
+
+    public static double maximum(List<Double> list) {
+        double value = Double.NEGATIVE_INFINITY;
+        for (Double d : list) {
+            value = Math.max(value, d);
+        }
+        return value;
+    }
+
+    public static double minimum(List<Double> list) {
+        double value = Double.POSITIVE_INFINITY;
+        for (Double d : list) {
+            value = Math.min(value, d);
+        }
+        return value;
+    }
 }
