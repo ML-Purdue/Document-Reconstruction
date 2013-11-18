@@ -1,3 +1,4 @@
+import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
@@ -15,6 +16,10 @@ public class Vector2D extends Point2D.Double {
     }
 
     public Vector2D(Point2D.Double other) {
+        super(other.x, other.y);
+    }
+
+    public Vector2D(Point other) {
         super(other.x, other.y);
     }
 
