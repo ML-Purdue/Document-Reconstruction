@@ -604,4 +604,20 @@ public class Utility {
     public static double unlerp(double a, double b, double v) {
         return (v - a) / (b - a);
     }
+
+    public static BufferedImage plot(List<Double> values, int height) {
+        BufferedImage image = new BufferedImage(values.size(), height, BufferedImage.TYPE_INT_ARGB);
+        double max = maximum(values);
+        double min = minimum(values);
+        Graphics g = image.getGraphics();
+        g.setColor(Color.BLACK);
+        for (int x = 0; x < values.size() - 1; x++) {
+            g.drawLine(x, (int) (lerp(height - 1, 0, unlerp(min, max, values.get(x)))), x + 1, (int) (lerp(height - 1, 0, unlerp(min, max, values.get(x + 1)))));
+        }
+        g.drawString(String.format("min %f max %f", min, max), 5, 12);
+        g.setColor(Color.RED);
+        int xAxis = (int) lerp(height - 1, 0, unlerp(min, max, 0));
+        g.drawLine(0, xAxis, values.size() - 1, xAxis);
+        return image;
+    }
 }
