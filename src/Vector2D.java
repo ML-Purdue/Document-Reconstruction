@@ -78,7 +78,7 @@ public class Vector2D extends Point2D.Double {
         return this.dot(other) / this.magnitude();
     }
 
-    public Vector2D interpolate(Point2D.Double other, double t) {
+    public Vector2D interpolate(Vector2D other, double t) {
         return this.add(other.subtract(this).multiply(t));
     }
 
