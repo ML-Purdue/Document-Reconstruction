@@ -596,4 +596,12 @@ public class Utility {
         }
         return value;
     }
+
+    public static double lerp(double a, double b, double t) {
+        return a + (b - a) * t;
+    }
+
+    public static double unlerp(double a, double b, double v) {
+        return (v - a) / (b - a);
+    }
 }
