@@ -47,7 +47,6 @@ public class CurvatureSolverStep extends Step implements Runnable {
             }
             for (int j = 0; j < perimeter.size(); j++) {
                 int value = Math.abs((int) (255 / mag * curvature.get(j)));
-                System.out.println(curvature.get(j) + " max " + mag);
                 if (curvature.get(j) > 0) {
                     image.setRGB(perimeter.get(j).x, perimeter.get(j).y, new Color(value, 0, 0).getRGB());
                 } else {
@@ -70,7 +69,6 @@ public class CurvatureSolverStep extends Step implements Runnable {
                     image2.setRGB(perimeters.get(j).get((match.indexB + k) % perimeters.get(j).size()).x, perimeters.get(j).get((match.indexB + k) % perimeters.get(j).size()).y, Color.GREEN.getRGB());
                 }
                 Utility.show(image2);
-                System.out.println(match.error);
             }
         }
 
