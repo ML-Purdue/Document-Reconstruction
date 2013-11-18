@@ -238,11 +238,11 @@ public class Utility {
         frame.add(new ImagePanel(deepCopy(image)));
         frame.pack();
         frame.setLocation(nextFrameX, nextFrameY);
-        maxRowHeight = Math.max(maxRowHeight, image.getHeight());
+        maxRowHeight = Math.max(maxRowHeight, frame.getLocation().y + frame.getHeight() + 30);
         nextFrameX += image.getWidth() + 10;
         if (nextFrameX > Toolkit.getDefaultToolkit().getScreenSize().width) {
             nextFrameX = 0;
-            nextFrameY += maxRowHeight + 25;
+            nextFrameY += maxRowHeight;
             maxRowHeight = 0;
             if (nextFrameY > Toolkit.getDefaultToolkit().getScreenSize().height) {
                 nextFrameY = 0;
