@@ -620,4 +620,47 @@ public class Utility {
         g.drawLine(0, xAxis, values.size() - 1, xAxis);
         return image;
     }
+
+    public static CurvatureMatch matchCurvatures(List<Double> A, List<Double> B) {
+        CurvatureMatch match = new CurvatureMatch();
+
+        B = negate(reverse(B));
+
+        match.error = Double.POSITIVE_INFINITY;
+        for (int a = 0; a < A.size(); a++) {
+            List<Double> shiftedA = shift(A, a);
+            for (int b = 0; b < B.size(); b++) {
+                List<Double> shiftedB = shift(B, b);
+                int m = Math.min(A.size(), B.size());
+                shiftedA = shiftedA.subList(0, m);
+                shiftedB = shiftedB.subList(0, m);
+                List<Double> aI = integrate(shiftedA);
+                List<Double> bI = integrate(shiftedB);
+                List<Double> eI = new ArrayList<Double>();
+                for (int i = 0; i < m; i++) {
+                    eI.add(Math.abs(bI.get(i) - aI.get(i)));
+                }
+                List<Double> cEI = integrate(eI);
+
+                for (int i = 0; i < cEI.size(); i++) {
+                    double error = (cEI.get(i) + 10) / (i + 1);
+                    if (error < match.error || error == match.error && i > match.length) {
+                        match.indexA = a;
+                        match.indexB = B.size() - b - i;
+                        match.length = i;
+                        match.error = error;
+                    }
+                }
+            }
+        }
+
+        return match;
+    }
+
+    public static class CurvatureMatch {
+        int indexA;
+        int indexB;
+        int length;
+        double error;
+    }
 }
