@@ -235,12 +235,10 @@ public class Utility {
             }
         }
 
-        boolean[][] blob = new boolean[largestBlobRegion.maxX - largestBlobRegion.minX + 1][largestBlobRegion.maxY - largestBlobRegion.minY + 1];
+        boolean[][] blob = new boolean[baseImage.getWidth()][baseImage.getHeight()];
         for (int x = largestBlobRegion.minX; x <= largestBlobRegion.maxX; x++) {
             for (int y = largestBlobRegion.minY; y <= largestBlobRegion.maxY; y++) {
-                int i = x - largestBlobRegion.minX;
-                int j = y - largestBlobRegion.minY;
-                blob[i][j] = blobs[x][y] == largestBlobRegion.blobNum;
+                blob[x][y] = blobs[x][y] == largestBlobRegion.blobNum;
             }
         }
 
