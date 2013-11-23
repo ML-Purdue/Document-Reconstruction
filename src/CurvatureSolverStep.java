@@ -122,7 +122,7 @@ public class CurvatureSolverStep extends Step implements Runnable {
             g.drawLine((int) islandA.x, (int) islandA.y, (int) islandA.x + (int) islandAB.x, (int) islandA.y + (int) islandAB.y);
             g.setColor(Color.RED);
             g.drawLine((int) matchA.x, (int) matchA.y, (int) matchA.x + (int) matchAB.x, (int) matchA.y + (int) matchAB.y);
-            g.setColor(Color.RED);
+            g.setColor(new Color(0, 0, 255, 128));
             g.drawLine((int) matchedA.x, (int) matchedA.y, (int) matchedA.x + (int) matchedAB.x, (int) matchedA.y + (int) matchedAB.y);
             g.drawRect((int) (island.position.x - island.image.getWidth() / 2), (int) (island.position.y - island.image.getHeight() / 2), island.image.getWidth(), island.image.getHeight());
             Utility.show(temp);
