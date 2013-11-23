@@ -530,6 +530,16 @@ public class Utility {
         return curvature;
     }
 
+    public static double getAreaOfPiece(BufferedImage image) {
+        double area = 0;
+        for (int i = 0; i < image.getWidth(); i++) {
+            for (int j = 0; j < image.getHeight(); j++) {
+                area += getAlphaValue(image.getRGB(i, j));
+            }
+        }
+        return area;
+    }
+
     public static int mod(int a, int n) {
         return a < 0 ? (a % n + n) % n : a % n;
     }
