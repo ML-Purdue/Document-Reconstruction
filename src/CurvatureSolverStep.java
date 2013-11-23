@@ -35,6 +35,7 @@ public class CurvatureSolverStep extends Step implements Runnable {
         List<List<Double>> curvatures = new ArrayList<List<Double>>();
         List<List<Point>> perimeters = new ArrayList<List<Point>>();
         for (int i = 0; i < layout.size(); i++) {
+            System.out.printf("Computing perimeter and curvature %d/%d\n", i + 1, layout.size());
             boolean[][] blob = Utility.getLargestBlob(layout.get(i).image, 128);
             List<Point> perimeter = Utility.perimeter(blob);
             perimeters.add(perimeter);
@@ -62,6 +63,7 @@ public class CurvatureSolverStep extends Step implements Runnable {
             int bestIndex = 0;
             double bestError = Double.POSITIVE_INFINITY;
             for (int i = 0; i < layout.size(); i++) {
+                System.out.printf("Computing best match %d/%d\n", i + 1, layout.size());
                 Utility.CurvatureMatch match = Utility.matchCurvatures(islandCurvature, curvatures.get(i));
                 if (match.error < bestError) {
                     bestError = match.error;
