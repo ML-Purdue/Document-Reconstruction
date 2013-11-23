@@ -107,6 +107,12 @@ public class Utility {
         return newImage;
     }
 
+    /**
+     * Used for the shuffle solver
+     * Assumes that all the pixel subvalues (rgba) are the same, hence just using red is ok
+     * @param image
+     * @return
+     */
     public static int getSumOfPixels(BufferedImage image) {
         int sum = 0;
         for (int x = 0; x < image.getWidth(); x++) {
