@@ -687,4 +687,29 @@ public class Utility {
         int length;
         double error;
     }
+
+    public static int getAvgColor(BufferedImage img, Point pt, int n) {
+        int avgA = 0, avgR = 0, avgG = 0, avgB = 0, count = 0, w = img.getWidth(), h = img.getHeight(), cx = pt.x, cy = pt.y;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                int x = cx + (i - 1), y = cy + (j - 1);
+                if (x >= 0 && x < w
+                        && y >= 0 && y < h) {
+                    count++;
+                    Color curColor = new Color(img.getRGB(x, y));
+                    double aWeight = ((double) curColor.getAlpha()) / 255;
+                    avgA += curColor.getAlpha();
+                    avgR += aWeight * curColor.getRed();
+                    avgG += aWeight * curColor.getGreen();
+                    avgB += aWeight * curColor.getBlue();
+                }
+            }
+        }
+        if (count != 0) {
+            return new Color(avgA / count, avgR / count, avgG / count, avgB / count).getRGB();
+        }
+        else {
+            return new Color(0, 0, 0, 0).getRGB();
+        }
+    }
 }
