@@ -10,8 +10,7 @@ public class CurvatureSolverStep extends Step implements Runnable {
     BufferedImage sandbox;
     BufferedImage display;
     List<Piece> layout;
-
-    //double bestError;
+    double bestError;
 
     public CurvatureSolverStep(Listener listener) {
         super(listener);
@@ -22,16 +21,13 @@ public class CurvatureSolverStep extends Step implements Runnable {
         layout = (List<Piece>) input;
         sandbox = makeSandbox(layout);
         display = sandbox;
-        //bestError = Double.POSITIVE_INFINITY;
+        bestError = Double.POSITIVE_INFINITY;
         setPreferredSize(new Dimension(sandbox.getWidth(), sandbox.getHeight()));
 
         new Thread(this).start();
     }
 
     private void solve() {
-        if (layout.isEmpty()) {
-            return;
-        }
         // blob detect at 50%
         // construct lists of edges
         Utility.drawLayout(layout, sandbox);
@@ -62,89 +58,102 @@ public class CurvatureSolverStep extends Step implements Runnable {
         perimeters.remove(0);
         curvatures.remove(0);
 
-        if (layout.isEmpty()) {
-            Utility.show(island.image);
-            return;
-        }
-        Utility.CurvatureMatch bestMatch = null;
-        int bestIndex = 0;
-        double bestError = Double.POSITIVE_INFINITY;
-        for (int i = 0; i < layout.size(); i++) {
-            System.out.printf("Computing best match %d/%d\n", i + 1, layout.size());
-            Utility.CurvatureMatch match = Utility.matchCurvatures(islandCurvature, curvatures.get(i));
-            if (match.error < bestError) {
-                bestError = match.error;
-                bestMatch = match;
-                bestIndex = i;
+        while (!layout.isEmpty()) {
+            Utility.CurvatureMatch bestMatch = null;
+            int bestIndex = 0;
+            double bestError = Double.POSITIVE_INFINITY;
+            for (int i = 0; i < layout.size(); i++) {
+                System.out.printf("Computing best match %d/%d\n", i + 1, layout.size());
+                Utility.CurvatureMatch match = Utility.matchCurvatures(islandCurvature, curvatures.get(i));
+                if (match.error < bestError) {
+                    bestError = match.error;
+                    bestMatch = match;
+                    bestIndex = i;
+                }
             }
+            BufferedImage image = new BufferedImage(layout.get(bestIndex).image.getWidth(), layout.get(bestIndex).image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            for (int k = 0; k < bestMatch.length; k++) {
+                image.setRGB(perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB + k, perimeters.get(bestIndex).size())).x, perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB + k, perimeters.get(bestIndex).size())).y, Color.RED.getRGB());
+            }
+            //Utility.show(image);
+            image = new BufferedImage(island.image.getWidth(), island.image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            for (int k = 0; k < bestMatch.length; k++) {
+                image.setRGB(islandPerimeter.get((bestMatch.indexA + k) % islandPerimeter.size()).x, islandPerimeter.get((bestMatch.indexA + k) % islandPerimeter.size()).y, Color.RED.getRGB());
+            }
+            //Utility.show(image);
+            Vector2D ipA = new Vector2D(islandPerimeter.get(bestMatch.indexA));
+            Vector2D ipB = new Vector2D(islandPerimeter.get((bestMatch.indexA + bestMatch.length) % islandPerimeter.size()));
+            Vector2D is2 = new Vector2D(island.image.getWidth() / 2, island.image.getHeight() / 2);
+            Vector2D ip = new Vector2D(island.position);
+            Vector2D islandA = ip.subtract(is2).add(ipA);
+            Vector2D islandAB = ipB.subtract(ipA);
+
+            Vector2D mpB = new Vector2D(perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB, perimeters.get(bestIndex).size())));
+            Vector2D mpA = new Vector2D(perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB + bestMatch.length, perimeters.get(bestIndex).size())));
+            Vector2D ms2 = new Vector2D(layout.get(bestIndex).image.getWidth() / 2, layout.get(bestIndex).image.getHeight() / 2);
+            Vector2D mp = new Vector2D(layout.get(bestIndex).position);
+            Vector2D matchA = mp.subtract(ms2).add(mpA);
+            Vector2D matchAB = mpB.subtract(mpA);
+
+            double angle = matchAB.angleBetween(islandAB);
+            Vector2D bestPosition = new Vector2D(layout.get(bestIndex).position);
+            Vector2D delta = matchA.subtract(bestPosition).rotate(angle).add(bestPosition).subtract(islandA);
+            layout.get(bestIndex).position = bestPosition.subtract(delta);
+            layout.get(bestIndex).rotation += angle;
+            BufferedImage temp = new BufferedImage(sandbox.getWidth(), sandbox.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            Utility.drawPiece(island, temp);
+            Utility.drawPiece(layout.get(bestIndex), temp);
+
+            BufferedImage tempIsland = new BufferedImage(sandbox.getWidth(), sandbox.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            Utility.drawPiece(island, tempIsland);
+            Utility.drawPiece(layout.get(bestIndex), tempIsland);
+
+            layout.remove(bestIndex);
+            perimeters.remove(bestIndex);
+            curvatures.remove(bestIndex);
+
+            islandPerimeter = Utility.perimeter(Utility.getLargestBlob(island.image, 128));
+            islandCurvature = Utility.smooth(Utility.getCurvature(islandPerimeter), 5);
+
+            Utility.drawChecker(sandbox.getGraphics(), sandbox.getWidth(), sandbox.getHeight(), 10, Color.LIGHT_GRAY, Color.DARK_GRAY);
+            //Utility.show(island.image);
+            Utility.drawPiece(island, sandbox);
+            Vector2D matchedA = matchA.rotate(angle, bestPosition).subtract(delta);
+            Vector2D matchedAB = matchAB.rotate(angle);
+            Graphics g = temp.getGraphics();
+            g.setColor(Color.WHITE);
+            g.drawLine((int) islandA.x, (int) islandA.y, (int) matchA.x, (int) matchA.y);
+            g.setColor(Color.GREEN);
+            g.drawLine((int) islandA.x, (int) islandA.y, (int) islandA.x + (int) islandAB.x, (int) islandA.y + (int) islandAB.y);
+            g.setColor(Color.RED);
+            g.drawLine((int) matchA.x, (int) matchA.y, (int) matchA.x + (int) matchAB.x, (int) matchA.y + (int) matchAB.y);
+            g.setColor(new Color(0, 0, 255, 128));
+            g.drawLine((int) matchedA.x, (int) matchedA.y, (int) matchedA.x + (int) matchedAB.x, (int) matchedA.y + (int) matchedAB.y);
+            g.drawRect((int) (island.position.x - island.image.getWidth() / 2), (int) (island.position.y - island.image.getHeight() / 2), island.image.getWidth(), island.image.getHeight());
+            //Utility.show(temp);
+            repaint();
+            System.out.println();
+
+            // set bestPiece.rotation and position
+            // draw bestPiece on match
+            // recalculate island blob, perimeter, curvature
+            // draw layout on checker background in sandbox
+
+            //Merge the best fit
+            island.image = tempIsland;
+            island.position.x = sandbox.getWidth() / 2;
+            island.position.y = sandbox.getHeight() / 2;
+            boolean[][] blob = Utility.getLargestBlob(island.image, 128);
+            List<Point> perimeter = Utility.perimeter(blob);
+            islandPerimeter = perimeter;
+            List<Double> rawCurvature = Utility.getCurvature(perimeter);
+            List<Double> curvature = Utility.smooth(rawCurvature, 10);
+            islandCurvature = curvature;
+            repaint();
         }
-        BufferedImage image = new BufferedImage(layout.get(bestIndex).image.getWidth(), layout.get(bestIndex).image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        for (int k = 0; k < bestMatch.length; k++) {
-            image.setRGB(perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB + k, perimeters.get(bestIndex).size())).x, perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB + k, perimeters.get(bestIndex).size())).y, Color.RED.getRGB());
-        }
-        image = new BufferedImage(island.image.getWidth(), island.image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        for (int k = 0; k < bestMatch.length; k++) {
-            image.setRGB(islandPerimeter.get((bestMatch.indexA + k) % islandPerimeter.size()).x, islandPerimeter.get((bestMatch.indexA + k) % islandPerimeter.size()).y, Color.RED.getRGB());
-        }
-        Vector2D ipA = new Vector2D(islandPerimeter.get(bestMatch.indexA));
-        Vector2D ipB = new Vector2D(islandPerimeter.get((bestMatch.indexA + bestMatch.length) % islandPerimeter.size()));
-        Vector2D is2 = new Vector2D(island.image.getWidth() / 2, island.image.getHeight() / 2);
-        Vector2D ip = new Vector2D(island.position);
-        Vector2D islandA = ip.subtract(is2).add(ipA);
-        Vector2D islandAB = ipB.subtract(ipA);
-
-        Vector2D mpB = new Vector2D(perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB, perimeters.get(bestIndex).size())));
-        Vector2D mpA = new Vector2D(perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB + bestMatch.length, perimeters.get(bestIndex).size())));
-        Vector2D ms2 = new Vector2D(layout.get(bestIndex).image.getWidth() / 2, layout.get(bestIndex).image.getHeight() / 2);
-        Vector2D mp = new Vector2D(layout.get(bestIndex).position);
-        Vector2D matchA = mp.subtract(ms2).add(mpA);
-        Vector2D matchAB = mpB.subtract(mpA);
-
-        double angle = matchAB.angleBetween(islandAB);
-        Vector2D bestPosition = new Vector2D(layout.get(bestIndex).position);
-        Vector2D delta = matchA.subtract(bestPosition).rotate(angle).add(bestPosition).subtract(islandA);
-        layout.get(bestIndex).position = bestPosition.subtract(delta);
-        layout.get(bestIndex).rotation += angle;
-        BufferedImage temp = new BufferedImage(sandbox.getWidth(), sandbox.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        BufferedImage tempIsland = new BufferedImage(sandbox.getWidth(), sandbox.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        Utility.drawPiece(island, temp);
-        Utility.drawPiece(layout.get(bestIndex), temp);
-        Utility.drawPiece(island, tempIsland);
-        Utility.drawPiece(layout.get(bestIndex), tempIsland);
-        layout.remove(bestIndex);
-        perimeters.remove(bestIndex);
-        curvatures.remove(bestIndex);
-
-        islandPerimeter = Utility.perimeter(Utility.getLargestBlob(island.image, 128));
-        islandCurvature = Utility.smooth(Utility.getCurvature(islandPerimeter), 5);
-
-        Utility.drawChecker(sandbox.getGraphics(), sandbox.getWidth(), sandbox.getHeight(), 10, Color.LIGHT_GRAY, Color.DARK_GRAY);
         Utility.drawPiece(island, sandbox);
-        Vector2D matchedA = matchA.rotate(angle, bestPosition).subtract(delta);
-        Vector2D matchedAB = matchAB.rotate(angle);
-        Graphics g = temp.getGraphics();
-        g.setColor(Color.WHITE);
-        g.drawLine((int) islandA.x, (int) islandA.y, (int) matchA.x, (int) matchA.y);
-        g.setColor(Color.GREEN);
-        g.drawLine((int) islandA.x, (int) islandA.y, (int) islandA.x + (int) islandAB.x, (int) islandA.y + (int) islandAB.y);
-        g.setColor(Color.RED);
-        g.drawLine((int) matchA.x, (int) matchA.y, (int) matchA.x + (int) matchAB.x, (int) matchA.y + (int) matchAB.y);
-        g.setColor(new Color(0, 0, 255, 128));
-        g.drawLine((int) matchedA.x, (int) matchedA.y, (int) matchedA.x + (int) matchedAB.x, (int) matchedA.y + (int) matchedAB.y);
-        g.drawRect((int) (island.position.x - island.image.getWidth() / 2), (int) (island.position.y - island.image.getHeight() / 2), island.image.getWidth(), island.image.getHeight());
+        Utility.show(island.image);
         repaint();
-        System.out.println();
-
-        // set bestPiece.rotation and position
-        // draw bestPiece on match
-        // recalculate island blob, perimeter, curvature
-        // draw layout on checker background in sandbox
-        //Merge the best fit
-        island.image = tempIsland;
-        island.position.x = sandbox.getWidth() / 2;
-        island.position.y = sandbox.getHeight() / 2;
-        layout.add(0, island);
-        solve();
     }
 
     @Override
