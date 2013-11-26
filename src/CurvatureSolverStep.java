@@ -104,7 +104,9 @@ public class CurvatureSolverStep extends Step implements Runnable {
             Utility.drawPiece(island, temp);
             Utility.drawPiece(layout.get(bestIndex), temp);
 
-            BufferedImage tempIsland = new BufferedImage(sandbox.getWidth(), sandbox.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            int maxX = (int) Math.max(island.image.getWidth() / 2 + island.position.x, layout.get(bestIndex).image.getWidth() / 2 + layout.get(bestIndex).position.x);
+            int maxY = (int) Math.max(island.image.getHeight() / 2 + island.position.y, layout.get(bestIndex).image.getHeight() / 2 + layout.get(bestIndex).position.y);
+            BufferedImage tempIsland = new BufferedImage(maxX, maxY, BufferedImage.TYPE_INT_ARGB);
             Utility.drawPiece(island, tempIsland);
             Utility.drawPiece(layout.get(bestIndex), tempIsland);
 
@@ -141,8 +143,8 @@ public class CurvatureSolverStep extends Step implements Runnable {
 
             //Merge the best fit
             island.image = tempIsland;
-            island.position.x = sandbox.getWidth() / 2;
-            island.position.y = sandbox.getHeight() / 2;
+            island.position.x = tempIsland.getWidth() / 2;
+            island.position.y = tempIsland.getHeight() / 2;
             boolean[][] blob = Utility.getLargestBlob(island.image, 128);
             List<Point> perimeter = Utility.perimeter(blob);
             islandPerimeter = perimeter;
