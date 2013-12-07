@@ -1,7 +1,7 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +33,11 @@ public class CurvatureSolverStep extends Step implements Runnable {
         Utility.drawLayout(layout, sandbox);
         repaint();
         List<List<Double>> curvatures = new ArrayList<List<Double>>();
-        List<List<Point>> perimeters = new ArrayList<List<Point>>();
+        List<List<Point2D.Double>> perimeters = new ArrayList<List<Point2D.Double>>();
         for (int i = 0; i < layout.size(); i++) {
             System.out.printf("Computing perimeter and curvature %d/%d\n", i + 1, layout.size());
             boolean[][] blob = Utility.getLargestBlob(layout.get(i).image, 128);
-            List<Point> perimeter = Utility.perimeter(blob);
+            List<Point2D.Double> perimeter = Utility.awesomePerimeter(blob);
             perimeters.add(perimeter);
             List<Double> rawCurvature = Utility.getCurvature(perimeter);
             List<Double> curvature = Utility.smooth(rawCurvature, 10);
@@ -52,7 +52,7 @@ public class CurvatureSolverStep extends Step implements Runnable {
         // - draw the best match on the island
 
         Piece island = layout.get(0);
-        List<Point> islandPerimeter = perimeters.get(0);
+        List<Point2D.Double> islandPerimeter = perimeters.get(0);
         List<Double> islandCurvature = curvatures.get(0);
         layout.remove(0);
         perimeters.remove(0);
@@ -73,12 +73,12 @@ public class CurvatureSolverStep extends Step implements Runnable {
             }
             BufferedImage image = new BufferedImage(layout.get(bestIndex).image.getWidth(), layout.get(bestIndex).image.getHeight(), BufferedImage.TYPE_INT_ARGB);
             for (int k = 0; k < bestMatch.length; k++) {
-                image.setRGB(perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB + k, perimeters.get(bestIndex).size())).x, perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB + k, perimeters.get(bestIndex).size())).y, Color.RED.getRGB());
+                image.setRGB((int) perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB + k, perimeters.get(bestIndex).size())).x, (int) perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB + k, perimeters.get(bestIndex).size())).y, Color.RED.getRGB());
             }
             //Utility.show(image);
             image = new BufferedImage(island.image.getWidth(), island.image.getHeight(), BufferedImage.TYPE_INT_ARGB);
             for (int k = 0; k < bestMatch.length; k++) {
-                image.setRGB(islandPerimeter.get((bestMatch.indexA + k) % islandPerimeter.size()).x, islandPerimeter.get((bestMatch.indexA + k) % islandPerimeter.size()).y, Color.RED.getRGB());
+                image.setRGB((int) islandPerimeter.get((bestMatch.indexA + k) % islandPerimeter.size()).x, (int) islandPerimeter.get((bestMatch.indexA + k) % islandPerimeter.size()).y, Color.RED.getRGB());
             }
             //Utility.show(image);
             Vector2D ipA = new Vector2D(islandPerimeter.get(bestMatch.indexA));
@@ -114,7 +114,7 @@ public class CurvatureSolverStep extends Step implements Runnable {
             perimeters.remove(bestIndex);
             curvatures.remove(bestIndex);
 
-            islandPerimeter = Utility.perimeter(Utility.getLargestBlob(island.image, 128));
+            islandPerimeter = Utility.awesomePerimeter(Utility.getLargestBlob(island.image, 128));
             islandCurvature = Utility.smooth(Utility.getCurvature(islandPerimeter), 5);
 
             Utility.drawChecker(sandbox.getGraphics(), sandbox.getWidth(), sandbox.getHeight(), 10, Color.LIGHT_GRAY, Color.DARK_GRAY);
@@ -146,7 +146,7 @@ public class CurvatureSolverStep extends Step implements Runnable {
             island.position.x = tempIsland.getWidth() / 2;
             island.position.y = tempIsland.getHeight() / 2;
             boolean[][] blob = Utility.getLargestBlob(island.image, 128);
-            List<Point> perimeter = Utility.perimeter(blob);
+            List<Point2D.Double> perimeter = Utility.awesomePerimeter(blob);
             islandPerimeter = perimeter;
             List<Double> rawCurvature = Utility.getCurvature(perimeter);
             List<Double> curvature = Utility.smooth(rawCurvature, 10);

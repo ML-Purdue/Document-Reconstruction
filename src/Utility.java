@@ -479,6 +479,27 @@ public class Utility {
         return l;
     }
 
+    public static List<Point2D.Double> awesomePerimeter(boolean[][] blob) {
+        boolean[][] edges = new boolean[blob.length + 1][blob[0].length + 1];
+        for (int i = 0; i < blob.length; i++) {
+            for (int j = 0; j < blob[0].length; j++) {
+                if (blob[i][j]) {
+                    edges[i][j] = true;
+                    edges[i + 1][j] = true;
+                    edges[i + 1][j + 1] = true;
+                    edges[i][j + 1] = true;
+                }
+            }
+        }
+        List<Point> l = perimeter(edges);
+        List<Point2D.Double> points = new ArrayList<Point2D.Double>();
+        for (Point p : l) {
+            Point2D.Double point = new Point2D.Double(p.x - .5, p.y - .5);
+            points.add(point);
+        }
+        return points;
+    }
+
     static boolean isPerimeter(int i, int j, boolean[][] blob) {
         // if the blob has a false value up, down, left, or right from the element, then it is part of the perimeter
         if (i >= blob.length || j >= blob[0].length) {
@@ -505,13 +526,13 @@ public class Utility {
 
     }
 
-    public static List<Double> getCurvature(List<Point> perimeter) {
+    public static List<Double> getCurvature(List<Point2D.Double> perimeter) {
         CircularArrayList<Double> curvature = new CircularArrayList<Double>();
 
         for (int i = 0; i < perimeter.size(); i++) {
-            Point a = perimeter.get(mod(i - 1, perimeter.size()));
-            Point p = perimeter.get(i);
-            Point b = perimeter.get((i + 1) % perimeter.size());
+            Point2D.Double a = perimeter.get(mod(i - 1, perimeter.size()));
+            Point2D.Double p = perimeter.get(i);
+            Point2D.Double b = perimeter.get((i + 1) % perimeter.size());
             Point2D.Double ab = new Point2D.Double(b.x - a.x, b.y - a.y);
             Point2D.Double ap = new Point2D.Double(p.x - a.x, p.y - a.y);
             double ab_mag = Math.sqrt(ab.x * ab.x + ab.y * ab.y);
