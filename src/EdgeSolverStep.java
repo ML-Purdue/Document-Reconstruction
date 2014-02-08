@@ -51,12 +51,9 @@ public class EdgeSolverStep extends Step implements Runnable {
         // - combine the island with the best match by moving and rotating it into place
         // - draw the best match on the island
 
-        Piece island = layout.get(0);
-        List<Point2D.Double> islandPerimeter = perimeters.get(0);
-        List<Double> islandCurvature = curvatures.get(0);
-        layout.remove(0);
-        perimeters.remove(0);
-        curvatures.remove(0);
+        Piece island = layout.remove(0);
+        List<Point2D.Double> islandPerimeter = perimeters.remove(0);
+        List<Double> islandCurvature = curvatures.remove(0);
 
         while (!layout.isEmpty()) {
             Utility.CurvatureMatch bestMatch = null;
