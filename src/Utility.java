@@ -598,9 +598,9 @@ public class Utility {
         return newList;
     }
 
-    public static List<Double> reverse(List<Double> list) {
-        List<Double> t = new ArrayList<Double>(list);
-        list = new ArrayList<Double>();
+    public static <T> List<T> reverse(List<T> list) {
+        List<T> t = new ArrayList<T>(list);
+        list = new ArrayList<T>();
         for (int i = t.size() - 1; i >= 0; i--) {
             list.add(t.get(i));
         }
