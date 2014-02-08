@@ -591,8 +591,8 @@ public class Utility {
         return integral;
     }
 
-    public static List<Double> shift(List<Double> list, int offset) {
-        List<Double> newList = new ArrayList<Double>();
+    public static <T> List<T> shift(List<T> list, int offset) {
+        List<T> newList = new ArrayList<T>();
         newList.addAll(list.subList((list.size() + offset) % list.size(), list.size()));
         newList.addAll(list.subList(0, (list.size() + offset) % list.size()));
         return newList;
@@ -664,24 +664,38 @@ public class Utility {
         return image;
     }
 
-    public static CurvatureMatch matchCurvatures(List<Double> A, List<Double> B) {
-        CurvatureMatch match = new CurvatureMatch();
+    public static CurvatureAndColorMatch matchCurvaturesAndColors(List<Double> curveA, List<Double> curveB, List<Color> colorA, List<Color> colorB) {
+        CurvatureAndColorMatch match = new CurvatureAndColorMatch();
 
-        B = negate(reverse(B));
+        curveB = negate(reverse(curveB));
+        colorB = reverse(colorB);
 
         match.error = Double.POSITIVE_INFINITY;
-        for (int a = 0; a < A.size(); a++) {
-            List<Double> shiftedA = shift(A, a);
-            for (int b = 0; b < B.size(); b++) {
-                List<Double> shiftedB = shift(B, b);
-                int m = Math.min(A.size(), B.size());
-                shiftedA = shiftedA.subList(0, m);
-                shiftedB = shiftedB.subList(0, m);
-                List<Double> aI = integrate(shiftedA);
-                List<Double> bI = integrate(shiftedB);
+        for (int a = 0; a < curveA.size(); a++) {
+            List<Double> shiftedCurveA = shift(curveA, a);
+            List<Color> shiftedColorA = shift(colorA, a);
+            for (int b = 0; b < curveB.size(); b++) {
+                List<Double> shiftedCurveB = shift(curveB, b);
+                List<Color> shiftedColorB = shift(colorB, b);
+                int m = Math.min(curveA.size(), curveB.size());
+                shiftedCurveA = shiftedCurveA.subList(0, m);
+                shiftedCurveB = shiftedCurveB.subList(0, m);
+                shiftedColorA = shiftedColorA.subList(0, m);
+                shiftedColorB = shiftedColorB.subList(0, m);
+                List<Double> aI = integrate(shiftedCurveA);
+                List<Double> bI = integrate(shiftedCurveB);
                 List<Double> eI = new ArrayList<Double>();
                 for (int i = 0; i < m; i++) {
-                    eI.add(Math.abs(bI.get(i) - aI.get(i)));
+                    double e = 0;
+                    e += Math.abs(bI.get(i) - aI.get(i));
+                    e += 0.2 * colorToPoint3d(shiftedColorA.get(i)).distance(colorToPoint3d(shiftedColorB.get(i))) / Math.sqrt(3);
+
+                    if (i % 10 == 0) {
+                        //                        System.out.println(shiftedColorA.get(i) + " " + shiftedColorB.get(i));
+                        //                        System.out.printf("curve error: %.2f\n", Math.pow(Math.abs(bI.get(i) - aI.get(i)), 2) / (Math.sqrt(2) / 2) / (i + 1));
+                        //                        System.out.printf("color error: %.2f\n", colorToPoint3d(shiftedColorA.get(i)).distance(colorToPoint3d(shiftedColorB.get(i))) / Math.sqrt(3));
+                    }
+                    eI.add(e);
                 }
                 List<Double> cEI = integrate(eI);
 
@@ -689,7 +703,7 @@ public class Utility {
                     double error = (cEI.get(i) + 10) / (i + 1);
                     if (error < match.error || error == match.error && i > match.length) {
                         match.indexA = a;
-                        match.indexB = B.size() - b - i;
+                        match.indexB = curveB.size() - b - i;
                         match.length = i;
                         match.error = error;
                     }
@@ -700,23 +714,24 @@ public class Utility {
         return match;
     }
 
-    public static class CurvatureMatch {
+    public static class CurvatureAndColorMatch {
         int indexA;
         int indexB;
         int length;
         double error;
     }
 
-    public static int getAvgColor(BufferedImage img, Point pt, int n) {
-        int avgA = 0, avgR = 0, avgG = 0, avgB = 0, count = 0, w = img.getWidth(), h = img.getHeight(), cx = pt.x, cy = pt.y;
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
+    public static int getAvgColor(BufferedImage img, java.awt.geom.Point2D.Double p, int n) {
+        int avgA = 0, avgR = 0, avgG = 0, avgB = 0, w = img.getWidth(), h = img.getHeight(), cx = (int) p.x, cy = (int) p.y;
+        double weight = 0;
+        for (int i = -n / 2; i < n / 2; ++i) {
+            for (int j = -n / 2; j < n / 2; ++j) {
                 int x = cx + (i - 1), y = cy + (j - 1);
                 if (x >= 0 && x < w
                         && y >= 0 && y < h) {
-                    count++;
-                    Color curColor = new Color(img.getRGB(x, y));
+                    Color curColor = new Color(img.getRGB(x, y), true);
                     double aWeight = ((double) curColor.getAlpha()) / 255;
+                    weight += aWeight;
                     avgA += curColor.getAlpha();
                     avgR += aWeight * curColor.getRed();
                     avgG += aWeight * curColor.getGreen();
@@ -724,11 +739,19 @@ public class Utility {
                 }
             }
         }
-        if (count != 0) {
-            return new Color(avgA / count, avgR / count, avgG / count, avgB / count).getRGB();
+        if (weight != 0) {
+            return new Color((int) (avgR / weight), (int) (avgG / weight), (int) (avgB / weight), (int) (avgA / weight)).getRGB();
         }
         else {
             return new Color(0, 0, 0, 0).getRGB();
         }
+    }
+
+    public static List<Color> getEdgeColors(BufferedImage image, List<java.awt.geom.Point2D.Double> perimeter) {
+        List<Color> colors = new ArrayList<Color>();
+        for (Point2D.Double p : perimeter) {
+            colors.add(new Color(getAvgColor(image, p, 15)));
+        }
+        return colors;
     }
 }

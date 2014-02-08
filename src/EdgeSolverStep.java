@@ -34,14 +34,27 @@ public class EdgeSolverStep extends Step implements Runnable {
         repaint();
         List<List<Double>> curvatures = new ArrayList<List<Double>>();
         List<List<Point2D.Double>> perimeters = new ArrayList<List<Point2D.Double>>();
+        List<List<Color>> colors = new ArrayList<List<Color>>();
         for (int i = 0; i < layout.size(); i++) {
-            System.out.printf("Computing perimeter and curvature %d/%d\n", i + 1, layout.size());
+            System.out.printf("Computing perimeter, curvature, and colors %d/%d\n", i + 1, layout.size());
             boolean[][] blob = Utility.getLargestBlob(layout.get(i).image, 128);
             List<Point2D.Double> perimeter = Utility.awesomePerimeter(blob);
             perimeters.add(perimeter);
             List<Double> rawCurvature = Utility.getCurvature(perimeter);
             List<Double> curvature = Utility.smooth(rawCurvature, 5);
             curvatures.add(curvature);
+            List<Color> edgeColors = Utility.getEdgeColors(layout.get(i).image, perimeter);
+            colors.add(edgeColors);
+            int h = 10;
+            BufferedImage image = new BufferedImage(edgeColors.size(), h, BufferedImage.TYPE_INT_ARGB);
+            for (int x = 0; x < edgeColors.size(); x++) {
+                Color c = edgeColors.get(x);
+                c = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255); // set alpha to 1
+                for (int y = 0; y < h; y++) {
+                    image.setRGB(x, y, c.getRGB());
+                }
+            }
+            Utility.show(image);
         }
 
         // TODO
@@ -54,14 +67,15 @@ public class EdgeSolverStep extends Step implements Runnable {
         Piece island = layout.remove(0);
         List<Point2D.Double> islandPerimeter = perimeters.remove(0);
         List<Double> islandCurvature = curvatures.remove(0);
+        List<Color> islandColor = colors.remove(0);
 
         while (!layout.isEmpty()) {
-            Utility.CurvatureMatch bestMatch = null;
+            Utility.CurvatureAndColorMatch bestMatch = null;
             int bestIndex = 0;
             double bestError = Double.POSITIVE_INFINITY;
             for (int i = 0; i < layout.size(); i++) {
                 System.out.printf("Computing best match %d/%d\n", i + 1, layout.size());
-                Utility.CurvatureMatch match = Utility.matchCurvatures(islandCurvature, curvatures.get(i));
+                Utility.CurvatureAndColorMatch match = Utility.matchCurvaturesAndColors(islandCurvature, curvatures.get(i), islandColor, colors.get(i));
                 if (match.error < bestError) {
                     bestError = match.error;
                     bestMatch = match;
@@ -110,6 +124,7 @@ public class EdgeSolverStep extends Step implements Runnable {
             layout.remove(bestIndex);
             perimeters.remove(bestIndex);
             curvatures.remove(bestIndex);
+            colors.remove(bestIndex);
 
             //            islandPerimeter = Utility.perimeter(Utility.getLargestBlob(island.image, 128));
             //            islandCurvature = Utility.smooth(Utility.getCurvature(islandPerimeter), 5);
@@ -148,6 +163,7 @@ public class EdgeSolverStep extends Step implements Runnable {
             List<Double> rawCurvature = Utility.getCurvature(perimeter);
             List<Double> curvature = Utility.smooth(rawCurvature, 10);
             islandCurvature = curvature;
+            islandColor = Utility.getEdgeColors(island.image, perimeter);
             repaint();
         }
         Utility.drawPiece(island, sandbox);
