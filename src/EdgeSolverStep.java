@@ -6,13 +6,13 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurvatureSolverStep extends Step implements Runnable {
+public class EdgeSolverStep extends Step implements Runnable {
     BufferedImage sandbox;
     BufferedImage display;
     List<Piece> layout;
     double bestError;
 
-    public CurvatureSolverStep(Listener listener) {
+    public EdgeSolverStep(Listener listener) {
         super(listener);
     }
 
@@ -40,7 +40,7 @@ public class CurvatureSolverStep extends Step implements Runnable {
             List<Point2D.Double> perimeter = Utility.awesomePerimeter(blob);
             perimeters.add(perimeter);
             List<Double> rawCurvature = Utility.getCurvature(perimeter);
-            List<Double> curvature = Utility.smooth(rawCurvature, 10);
+            List<Double> curvature = Utility.smooth(rawCurvature, 5);
             curvatures.add(curvature);
         }
 
@@ -114,8 +114,8 @@ public class CurvatureSolverStep extends Step implements Runnable {
             perimeters.remove(bestIndex);
             curvatures.remove(bestIndex);
 
-            islandPerimeter = Utility.awesomePerimeter(Utility.getLargestBlob(island.image, 128));
-            islandCurvature = Utility.smooth(Utility.getCurvature(islandPerimeter), 5);
+            //            islandPerimeter = Utility.perimeter(Utility.getLargestBlob(island.image, 128));
+            //            islandCurvature = Utility.smooth(Utility.getCurvature(islandPerimeter), 5);
 
             Utility.drawChecker(sandbox.getGraphics(), sandbox.getWidth(), sandbox.getHeight(), 10, Color.LIGHT_GRAY, Color.DARK_GRAY);
             //Utility.show(island.image);
