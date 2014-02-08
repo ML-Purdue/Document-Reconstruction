@@ -671,7 +671,12 @@ public class Utility {
         colorB = reverse(colorB);
 
         match.error = Double.POSITIVE_INFINITY;
+        int tenPercent = (int) (0.1 * curveA.size());
         for (int a = 0; a < curveA.size(); a++) {
+            //Print out % done
+            if (a % tenPercent == 0) {
+                System.out.println(Math.round((10.0 * a) / curveA.size()) * 10 + "%");
+            }
             List<Double> shiftedCurveA = shift(curveA, a);
             List<Color> shiftedColorA = shift(colorA, a);
             for (int b = 0; b < curveB.size(); b++) {
