@@ -65,6 +65,8 @@ public class EdgeSolverStep extends Step implements Runnable {
         // - draw the best match on the island
 
         Piece island = layout.remove(0);
+        island.position.x = sandbox.getWidth() / 2;
+        island.position.y = sandbox.getHeight() / 2;
         List<Point2D.Double> islandPerimeter = perimeters.remove(0);
         List<Double> islandCurvature = curvatures.remove(0);
         List<Color> islandColor = colors.remove(0);
@@ -117,7 +119,9 @@ public class EdgeSolverStep extends Step implements Runnable {
 
             int maxX = (int) Math.max(island.image.getWidth() / 2 + island.position.x, layout.get(bestIndex).image.getWidth() / 2 + layout.get(bestIndex).position.x);
             int maxY = (int) Math.max(island.image.getHeight() / 2 + island.position.y, layout.get(bestIndex).image.getHeight() / 2 + layout.get(bestIndex).position.y);
-            BufferedImage tempIsland = new BufferedImage(maxX, maxY, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage tempIsland = new BufferedImage(sandbox.getWidth(), sandbox.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            island.position.x = sandbox.getWidth() / 2;
+            island.position.y = sandbox.getHeight() / 2;
             Utility.drawPiece(island, tempIsland);
             Utility.drawPiece(layout.get(bestIndex), tempIsland);
 
@@ -155,8 +159,8 @@ public class EdgeSolverStep extends Step implements Runnable {
 
             //Merge the best fit
             island.image = tempIsland;
-            island.position.x = tempIsland.getWidth() / 2;
-            island.position.y = tempIsland.getHeight() / 2;
+            island.position.x = sandbox.getWidth() / 2;
+            island.position.y = sandbox.getHeight() / 2;
             boolean[][] blob = Utility.getLargestBlob(island.image, 128);
             List<Point2D.Double> perimeter = Utility.awesomePerimeter(blob);
             islandPerimeter = perimeter;
