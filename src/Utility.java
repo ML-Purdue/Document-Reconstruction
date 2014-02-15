@@ -811,4 +811,19 @@ public class Utility {
 
         return distAngle;
     }
+
+    public static List<Vector2D> transform(Vector2D distance, double angle, List<Vector2D> points) {
+        List<Vector2D> trans = new ArrayList<Vector2D>();
+        java.util.ListIterator<Vector2D> it = points.listIterator();
+        Vector2D start = it.next();
+        start.add(distance);
+        trans.add(start);
+        while (it.hasNext()) {
+            Vector2D newP = it.next();
+            newP.add(distance);
+            newP.rotate(angle, start);
+            trans.add(newP);
+        }
+        return trans;
+    }
 }
