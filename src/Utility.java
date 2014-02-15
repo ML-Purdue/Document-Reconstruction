@@ -771,4 +771,12 @@ public class Utility {
         return total;
     }
 
+    public static <T> List<T> cyclicSubList(int from, int to, List<T> l) {
+        List<T> n = new ArrayList<T>();
+        for (int i = from; i != to; i = (i + 1) % l.size()) {
+            n.add(l.get(i));
+        }
+        return n;
+    }
+
 }
