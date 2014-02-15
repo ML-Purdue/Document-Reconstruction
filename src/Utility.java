@@ -693,7 +693,7 @@ public class Utility {
                 for (int i = 0; i < m; i++) {
                     double e = 0;
                     e += Math.abs(bI.get(i) - aI.get(i));
-                    e += 0.2 * colorToPoint3d(shiftedColorA.get(i)).distance(colorToPoint3d(shiftedColorB.get(i))) / Math.sqrt(3);
+                    e += 0.3 * colorToPoint3d(shiftedColorA.get(i)).distance(colorToPoint3d(shiftedColorB.get(i))) / Math.sqrt(3);
 
                     if (i % 10 == 0) {
                         //                        System.out.println(shiftedColorA.get(i) + " " + shiftedColorB.get(i));
@@ -705,7 +705,7 @@ public class Utility {
                 List<Double> cEI = integrate(eI);
 
                 for (int i = 0; i < cEI.size(); i++) {
-                    double error = (cEI.get(i) + 10) / (i + 1);
+                    double error = (cEI.get(i) + 4) / (i + 1);
                     if (error < match.error || error == match.error && i > match.length) {
                         match.indexA = a;
                         match.indexB = curveB.size() - b - i;
@@ -779,4 +779,36 @@ public class Utility {
         return n;
     }
 
+    public static class DistanceAngle {
+        public Vector2D distance;
+        public double angle;
+    }
+
+    public static DistanceAngle calculateDistanceAngle(Point2D.Double s1, Point2D.Double e1, Point2D.Double s2, Point2D.Double e2, Piece p1, Piece p2) {
+        Vector2D ipA = new Vector2D(s1);
+        Vector2D ipB = new Vector2D(e1);
+        Vector2D is2 = new Vector2D(p1.image.getWidth() / 2, p1.image.getHeight() / 2);
+        Vector2D ip = new Vector2D(p1.position);
+        //actual position of ipA (start point) in the sandbox
+        Vector2D islandA = ip.subtract(is2).add(ipA);
+        //distance between the start and end point
+        Vector2D islandAB = ipB.subtract(ipA);
+
+        //This flip is due to the traversal of the lists in opposite directions, maybe
+        Vector2D mpB = new Vector2D(s2);
+        Vector2D mpA = new Vector2D(e2);
+        Vector2D ms2 = new Vector2D(p2.image.getWidth() / 2, p2.image.getHeight() / 2);
+        Vector2D mp = new Vector2D(p2.position);
+        Vector2D matchA = mp.subtract(ms2).add(mpA);
+        Vector2D matchAB = mpB.subtract(mpA);
+
+        double angle = matchAB.angleBetween(islandAB);
+        Vector2D position = new Vector2D(p2.position);
+        Vector2D delta = matchA.subtract(position).rotate(angle).add(position).subtract(islandA);
+        DistanceAngle distAngle = new DistanceAngle();
+        distAngle.angle = angle;
+        distAngle.distance = delta;
+
+        return distAngle;
+    }
 }

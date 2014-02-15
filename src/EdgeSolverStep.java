@@ -98,7 +98,9 @@ public class EdgeSolverStep extends Step implements Runnable {
             Vector2D ipB = new Vector2D(islandPerimeter.get((bestMatch.indexA + bestMatch.length) % islandPerimeter.size()));
             Vector2D is2 = new Vector2D(island.image.getWidth() / 2, island.image.getHeight() / 2);
             Vector2D ip = new Vector2D(island.position);
+            //actual position of ipA (start point) in the sandbox
             Vector2D islandA = ip.subtract(is2).add(ipA);
+            //distance between the start and end point
             Vector2D islandAB = ipB.subtract(ipA);
 
             Vector2D mpB = new Vector2D(perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB, perimeters.get(bestIndex).size())));
