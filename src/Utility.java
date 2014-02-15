@@ -780,7 +780,7 @@ public class Utility {
     }
 
     public static class DistanceAngle {
-        public Vector2D distance;
+        public Vector2D delta;
         public double angle;
     }
 
@@ -807,7 +807,7 @@ public class Utility {
         Vector2D delta = matchA.subtract(position).rotate(angle).add(position).subtract(islandA);
         DistanceAngle distAngle = new DistanceAngle();
         distAngle.angle = angle;
-        distAngle.distance = delta;
+        distAngle.delta = delta;
 
         return distAngle;
     }

@@ -94,25 +94,16 @@ public class EdgeSolverStep extends Step implements Runnable {
                 image.setRGB((int) islandPerimeter.get((bestMatch.indexA + k) % islandPerimeter.size()).x, (int) islandPerimeter.get((bestMatch.indexA + k) % islandPerimeter.size()).y, Color.RED.getRGB());
             }
             //Utility.show(image);
-            Vector2D ipA = new Vector2D(islandPerimeter.get(bestMatch.indexA));
-            Vector2D ipB = new Vector2D(islandPerimeter.get((bestMatch.indexA + bestMatch.length) % islandPerimeter.size()));
-            Vector2D is2 = new Vector2D(island.image.getWidth() / 2, island.image.getHeight() / 2);
-            Vector2D ip = new Vector2D(island.position);
-            //actual position of ipA (start point) in the sandbox
-            Vector2D islandA = ip.subtract(is2).add(ipA);
-            //distance between the start and end point
-            Vector2D islandAB = ipB.subtract(ipA);
 
-            Vector2D mpB = new Vector2D(perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB, perimeters.get(bestIndex).size())));
-            Vector2D mpA = new Vector2D(perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB + bestMatch.length, perimeters.get(bestIndex).size())));
-            Vector2D ms2 = new Vector2D(layout.get(bestIndex).image.getWidth() / 2, layout.get(bestIndex).image.getHeight() / 2);
-            Vector2D mp = new Vector2D(layout.get(bestIndex).position);
-            Vector2D matchA = mp.subtract(ms2).add(mpA);
-            Vector2D matchAB = mpB.subtract(mpA);
-
-            double angle = matchAB.angleBetween(islandAB);
+            Utility.DistanceAngle distAngle = Utility.calculateDistanceAngle(islandPerimeter.get(bestMatch.indexA),
+                    islandPerimeter.get((bestMatch.indexA + bestMatch.length) % islandPerimeter.size()),
+                    perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB, perimeters.get(bestIndex).size())),
+                    perimeters.get(bestIndex).get(Utility.mod(bestMatch.indexB + bestMatch.length, perimeters.get(bestIndex).size())),
+                    island,
+                    layout.get(bestIndex));
+            double angle = distAngle.angle;
             Vector2D bestPosition = new Vector2D(layout.get(bestIndex).position);
-            Vector2D delta = matchA.subtract(bestPosition).rotate(angle).add(bestPosition).subtract(islandA);
+            Vector2D delta = distAngle.delta;
             layout.get(bestIndex).position = bestPosition.subtract(delta);
             layout.get(bestIndex).rotation += angle;
             BufferedImage temp = new BufferedImage(sandbox.getWidth(), sandbox.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -138,7 +129,7 @@ public class EdgeSolverStep extends Step implements Runnable {
             Utility.drawChecker(sandbox.getGraphics(), sandbox.getWidth(), sandbox.getHeight(), 10, Color.LIGHT_GRAY, Color.DARK_GRAY);
             //Utility.show(island.image);
             Utility.drawPiece(island, sandbox);
-            Vector2D matchedA = matchA.rotate(angle, bestPosition).subtract(delta);
+            /*Vector2D matchedA = matchA.rotate(angle, bestPosition).subtract(delta);
             Vector2D matchedAB = matchAB.rotate(angle);
             Graphics g = temp.getGraphics();
             g.setColor(Color.WHITE);
@@ -150,7 +141,7 @@ public class EdgeSolverStep extends Step implements Runnable {
             g.setColor(new Color(0, 0, 255, 128));
             g.drawLine((int) matchedA.x, (int) matchedA.y, (int) matchedA.x + (int) matchedAB.x, (int) matchedA.y + (int) matchedAB.y);
             g.drawRect((int) (island.position.x - island.image.getWidth() / 2), (int) (island.position.y - island.image.getHeight() / 2), island.image.getWidth(), island.image.getHeight());
-            //Utility.show(temp);
+            //Utility.show(temp);*/
             repaint();
             System.out.println();
 
