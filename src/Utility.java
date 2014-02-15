@@ -759,4 +759,16 @@ public class Utility {
         }
         return colors;
     }
+
+    public static double shoeLace(List<java.awt.geom.Point2D.Double> a, List<java.awt.geom.Point2D.Double> b) {
+        double total = 0.0;
+        if (a.size() != b.size()) {
+            return -1.0;
+        }
+        for (int i = 0; i < a.size(); i++) {
+            total += a.get(i).distance(b.get(i));
+        }
+        return total;
+    }
+
 }
