@@ -719,6 +719,22 @@ public class Utility {
         return match;
     }
 
+    public static List<Vector2D> listPoint2DToVector2D(List<Point2D.Double> l) {
+        List<Vector2D> lp = new ArrayList<Vector2D>();
+        for (Point2D.Double p : l) {
+            lp.add(new Vector2D(p));
+        }
+        return lp;
+    }
+
+    public static List<Point2D.Double> listVector2DToPoint2D(List<Vector2D> l) {
+        List<Point2D.Double> lp = new ArrayList<Point2D.Double>();
+        for (Vector2D p : l) {
+            lp.add(p);
+        }
+        return lp;
+    }
+
     public static class MatchInfo {
         int indexA;
         int indexB;
