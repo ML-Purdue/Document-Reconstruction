@@ -72,12 +72,12 @@ public class EdgeSolverStep extends Step implements Runnable {
         List<Color> islandColor = colors.remove(0);
 
         while (!layout.isEmpty()) {
-            Utility.CurvatureAndColorMatch bestMatch = null;
+            Utility.MatchInfo bestMatch = null;
             int bestIndex = 0;
             double bestError = Double.POSITIVE_INFINITY;
             for (int i = 0; i < layout.size(); i++) {
                 System.out.printf("Computing best match %d/%d\n", i + 1, layout.size());
-                Utility.CurvatureAndColorMatch match = Utility.matchCurvaturesAndColors(islandCurvature, curvatures.get(i), islandColor, colors.get(i));
+                Utility.MatchInfo match = Utility.matchCurvaturesAndColors(islandCurvature, curvatures.get(i), islandColor, colors.get(i));
                 if (match.error < bestError) {
                     bestError = match.error;
                     bestMatch = match;

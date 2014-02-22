@@ -664,8 +664,8 @@ public class Utility {
         return image;
     }
 
-    public static CurvatureAndColorMatch matchCurvaturesAndColors(List<Double> curveA, List<Double> curveB, List<Color> colorA, List<Color> colorB) {
-        CurvatureAndColorMatch match = new CurvatureAndColorMatch();
+    public static MatchInfo matchCurvaturesAndColors(List<Double> curveA, List<Double> curveB, List<Color> colorA, List<Color> colorB) {
+        MatchInfo match = new MatchInfo();
 
         curveB = negate(reverse(curveB));
         colorB = reverse(colorB);
@@ -719,7 +719,7 @@ public class Utility {
         return match;
     }
 
-    public static class CurvatureAndColorMatch {
+    public static class MatchInfo {
         int indexA;
         int indexB;
         int length;
