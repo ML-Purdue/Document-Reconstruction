@@ -735,6 +735,72 @@ public class Utility {
         return lp;
     }
 
+    public static MatchInfo matchShoelaceAndColors(Piece island, Piece piece, List<Point2D.Double> perimeterA, List<Point2D.Double> perimeterB, List<Color> colorA, List<Color> colorB) {
+        MatchInfo match = new MatchInfo();
+
+        perimeterB = reverse(perimeterB);
+        colorB = reverse(colorB);
+
+        match.error = Double.POSITIVE_INFINITY;
+        int tenPercent = (int) (0.1 * perimeterA.size());
+        for (int a = 0; a < perimeterA.size(); a += 10) {
+            //Print out % done
+            if (a % tenPercent == 0) {
+                System.out.println(Math.round((10.0 * a) / perimeterA.size()) * 10 + "%");
+            }
+            List<Point2D.Double> shiftedPerimeterA = shift(perimeterA, a);
+            List<Color> shiftedColorA = shift(colorA, a);
+            for (int b = 0; b < perimeterB.size(); b += 10) {
+                int m = Math.min(perimeterA.size(), perimeterB.size());
+
+                List<Point2D.Double> shiftedPerimeterB = shift(perimeterB, b);
+
+                shiftedPerimeterA = shiftedPerimeterA.subList(0, m);
+                shiftedPerimeterB = shiftedPerimeterB.subList(0, m);
+
+                List<Color> shiftedColorB = shift(colorB, b);
+                shiftedColorA = shiftedColorA.subList(0, m);
+                shiftedColorB = shiftedColorB.subList(0, m);
+                List<Double> eI = new ArrayList<Double>();
+                for (int i = 0; i < m; i += 10) {
+                    Utility.DistanceAngle distAngle = Utility.calculateDistanceAngle(
+                            shiftedPerimeterA.get(0),
+                            shiftedPerimeterA.get(i),
+                            shiftedPerimeterB.get(0),
+                            shiftedPerimeterB.get(i),
+                            island,
+                            piece);
+
+                    List<Vector2D> transformedShiftedPerimeterB = transform(distAngle.delta, distAngle.angle, listPoint2DToVector2D(shiftedPerimeterB));
+
+                    double e = 0;
+                    e += shoeLace(shiftedPerimeterA, listVector2DToPoint2D(transformedShiftedPerimeterB));
+                    e += 0.3 * colorToPoint3d(shiftedColorA.get(i)).distance(colorToPoint3d(shiftedColorB.get(i))) / Math.sqrt(3);
+
+                    if (i % 10 == 0) {
+                        //                        System.out.println(shiftedColorA.get(i) + " " + shiftedColorB.get(i));
+                        //                        System.out.printf("perimeter error: %.2f\n", Math.pow(Math.abs(bI.get(i) - aI.get(i)), 2) / (Math.sqrt(2) / 2) / (i + 1));
+                        //                        System.out.printf("color error: %.2f\n", colorToPoint3d(shiftedColorA.get(i)).distance(colorToPoint3d(shiftedColorB.get(i))) / Math.sqrt(3));
+                    }
+                    eI.add(e);
+                }
+                List<Double> cEI = integrate(eI);
+
+                for (int i = 0; i < cEI.size(); i++) {
+                    double error = (cEI.get(i) + 4) / (i + 1);
+                    if (error < match.error || error == match.error && i > match.length) {
+                        match.indexA = a;
+                        match.indexB = perimeterB.size() - b - i;
+                        match.length = i;
+                        match.error = error;
+                    }
+                }
+            }
+        }
+
+        return match;
+    }
+
     public static class MatchInfo {
         int indexA;
         int indexB;
