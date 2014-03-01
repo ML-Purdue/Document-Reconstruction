@@ -116,7 +116,7 @@ public class BackgroundSubtractionStep extends Step implements MouseMotionListen
             listener.update(this, processedImage);
             break;
         case KeyEvent.VK_E:
-            displayImage = Utility.showAlpha(processedImage);
+            displayImage = UtilityScala.showAlpha(processedImage);
             repaint();
             break;
         }
