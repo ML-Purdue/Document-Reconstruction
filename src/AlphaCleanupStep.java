@@ -23,7 +23,7 @@ public class AlphaCleanupStep extends Step implements KeyListener {
         originalImage = (BufferedImage) input;
         setPreferredSize(new Dimension(originalImage.getWidth(), originalImage.getHeight()));
         processedImage = Utility.contrastAlpha(originalImage, contrast);
-        displayImage = Utility.showAlpha(processedImage);
+        displayImage = UtilityScala.showAlpha(processedImage);
         repaint();
         requestFocus();
     }
@@ -41,14 +41,14 @@ public class AlphaCleanupStep extends Step implements KeyListener {
         case KeyEvent.VK_UP:
             contrast += 0.01;
             processedImage = Utility.contrastAlpha(originalImage, contrast);
-            displayImage = Utility.showAlpha(processedImage);
+            displayImage = UtilityScala.showAlpha(processedImage);
             repaint();
             System.out.printf("Contrast: %.2f\n", contrast);
             break;
         case KeyEvent.VK_DOWN:
             contrast -= 0.01;
             processedImage = Utility.contrastAlpha(originalImage, contrast);
-            displayImage = Utility.showAlpha(processedImage);
+            displayImage = UtilityScala.showAlpha(processedImage);
             repaint();
             System.out.printf("Contrast: %.2f\n", contrast);
             break;

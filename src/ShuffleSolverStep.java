@@ -37,7 +37,7 @@ public class ShuffleSolverStep extends Step implements Runnable {
     private void solve() {
         double area = 0;
         for (Piece piece : bestLayout) {
-            area += Utility.getSumOfPixels(Utility.showAlpha(piece.image));
+            area += Utility.getSumOfPixels(UtilityScala.showAlpha(piece.image));
         }
 
         while (true) {
@@ -61,7 +61,7 @@ public class ShuffleSolverStep extends Step implements Runnable {
             // calculate error
             BufferedImage filtered = EdgeDetectionFilter.getEdgeDetectionFilter(sandbox);
             double error = Utility.getSumOfPixels(filtered);
-            error += Math.abs(area - Utility.getSumOfPixels(Utility.showAlpha(sandbox)));
+            error += Math.abs(area - Utility.getSumOfPixels(UtilityScala.showAlpha(sandbox)));
 
             // assign to best if error is less
             if (error < bestError) {
