@@ -7,7 +7,6 @@ object UtilityScala {
     {
       val newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
       for (iy <- 0 until image.getHeight(); ix <- 0 until image.getWidth()) {
-        System.out.println("(" + ix + ", " + iy + ")");
         val alpha = new Color(image.getRGB(ix, iy), true).getAlpha();
         newImage.setRGB(ix, iy, new Color(alpha, alpha, alpha).getRGB());
       }
