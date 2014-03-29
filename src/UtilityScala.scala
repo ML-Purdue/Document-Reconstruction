@@ -49,11 +49,25 @@ object UtilityScala {
     (10 + x.map(Math.abs _).sum) / left.length
   }
 
-  def randomConfiguration(leftPiece: Piece, rightPiece: Piece): Double = {
-    val pieceToSmoothCurve = (p: Piece, amount: Int) => Utility.smooth(Utility.getCurvature(Utility.awesomePerimeter(Utility.getLargestBlob(p.image, 128))), amount).toList.map(_.toDouble)
-    val (leftCurve, rightCurve) = (pieceToSmoothCurve(leftPiece, 5).toList, pieceToSmoothCurve(rightPiece, 5));
+  def randomConfiguration(leftPiece: Piece, rightPiece: Piece): (Piece, Piece, Double) = {
+    val pieceToPerimeter = (p: Piece) => Utility.awesomePerimeter(Utility.getLargestBlob(p.image, 128)).toList
+    val perimeterToSmoothCurve = (p: List[Point2D.Double], amount: Int) => Utility.smooth(Utility.getCurvature(p), amount).toList.map(_.toDouble)
+
+    val (leftPerimeter, rightPerimeter) = (pieceToPerimeter(leftPiece), pieceToPerimeter(rightPiece))
+    val (leftCurve, rightCurve) = (perimeterToSmoothCurve(leftPerimeter, 5).toList, perimeterToSmoothCurve(rightPerimeter, 5).toList);
+
     val (n, m, l) = (random.nextInt(leftCurve.size()), random.nextInt(rightCurve.size()), Math.min(leftCurve.length, rightCurve.length))
 
-    return UtilityScala.curveError((leftCurve ++ leftCurve).drop(n).take(l), (rightCurve ++ rightCurve).drop(m).take(l).reverse.map(_ * -1))
+    val distAngle = Utility.calculateDistanceAngle(
+      leftPerimeter.get(n),
+      leftPerimeter.get((n + l) % leftPerimeter.size()),
+      rightPerimeter.get(m),
+      rightPerimeter.get((m + l) % rightPerimeter.size()),
+      leftPiece,
+      rightPiece);
+    val p = new Piece(new Vector2D(rightPiece.position).subtract(distAngle.delta), distAngle.angle, rightPiece.image)
+    val e = UtilityScala.curveError((leftCurve ++ leftCurve).drop(n).take(l), (rightCurve ++ rightCurve).drop(m).take(l).reverse.map(_ * -1))
+
+    return (leftPiece, p, e)
   }
 }
