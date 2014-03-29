@@ -2,8 +2,11 @@ import java.awt.image.BufferedImage
 import java.awt.Color
 import java.awt.geom.Point2D
 import scala.collection.JavaConversions._
+import java.util.Random;
 
 object UtilityScala {
+  val random = new Random()
+
   def showAlpha(image: BufferedImage): BufferedImage =
     {
       val newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -46,9 +49,10 @@ object UtilityScala {
     (10 + x.map(Math.abs _).sum) / left.length
   }
 
-  def computeConfigurationError(leftPiece: Piece, rightPiece: Piece, n: Int, m: Int, l: Int): Double = {
+  def randomConfiguration(leftPiece: Piece, rightPiece: Piece): Double = {
     val pieceToSmoothCurve = (p: Piece, amount: Int) => Utility.smooth(Utility.getCurvature(Utility.awesomePerimeter(Utility.getLargestBlob(p.image, 128))), amount).toList.map(_.toDouble)
     val (leftCurve, rightCurve) = (pieceToSmoothCurve(leftPiece, 5).toList, pieceToSmoothCurve(rightPiece, 5));
+    val (n, m, l) = (random.nextInt(leftCurve.size()), random.nextInt(rightCurve.size()), Math.min(leftCurve.length, rightCurve.length))
 
     return UtilityScala.curveError((leftCurve ++ leftCurve).drop(n).take(l), (rightCurve ++ rightCurve).drop(m).take(l).reverse.map(_ * -1))
   }
