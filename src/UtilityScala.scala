@@ -1,7 +1,7 @@
 import java.awt.image.BufferedImage;
 import java.awt.Color;
 import java.awt.geom.Point2D;
-import java.util.List;
+
 object UtilityScala {
   def showAlpha(image: BufferedImage): BufferedImage =
     {
@@ -31,4 +31,17 @@ object UtilityScala {
     }
     return lp;
   }*/
+
+  def curveError(left: List[Double], right: List[Double]): Double = {
+    assume(left.length == right.length)
+    if (left.length == 0) {
+      return Double.PositiveInfinity
+    }
+
+    val integrate = (l: List[Double]) => l.scanLeft(0.0)(_ + _)
+    val difference = (l: List[Double], r: List[Double]) => (l, r).zipped map (_ - _)
+    val x = difference(integrate(left), integrate(right))
+
+    (10 + x.map(Math.abs _).sum) / left.length
+  }
 }
