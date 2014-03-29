@@ -56,7 +56,7 @@ object UtilityScala {
     val (leftPerimeter, rightPerimeter) = (pieceToPerimeter(leftPiece), pieceToPerimeter(rightPiece))
     val (leftCurve, rightCurve) = (perimeterToSmoothCurve(leftPerimeter, 5).toList, perimeterToSmoothCurve(rightPerimeter, 5).toList);
 
-    val (n, m, l) = (random.nextInt(leftCurve.size()), random.nextInt(rightCurve.size()), Math.min(leftCurve.length, rightCurve.length))
+    val (n, m, l) = (random.nextInt(leftCurve.size()), random.nextInt(rightCurve.size()), random.nextInt(Math.min(leftCurve.length, rightCurve.length)))
 
     val distAngle = Utility.calculateDistanceAngle(
       leftPerimeter.get(n),
