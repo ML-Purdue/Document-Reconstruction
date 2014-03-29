@@ -1,6 +1,7 @@
-import java.awt.image.BufferedImage;
-import java.awt.Color;
-import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage
+import java.awt.Color
+import java.awt.geom.Point2D
+import scala.collection.JavaConversions._
 
 object UtilityScala {
   def showAlpha(image: BufferedImage): BufferedImage =
@@ -43,5 +44,12 @@ object UtilityScala {
     val x = difference(integrate(left), integrate(right))
 
     (10 + x.map(Math.abs _).sum) / left.length
+  }
+
+  def computeConfigurationError(leftPiece: Piece, rightPiece: Piece, n: Int, m: Int, l: Int): Double = {
+    val pieceToSmoothCurve = (p: Piece, amount: Int) => Utility.smooth(Utility.getCurvature(Utility.awesomePerimeter(Utility.getLargestBlob(p.image, 128))), amount).toList.map(_.toDouble)
+    val (leftCurve, rightCurve) = (pieceToSmoothCurve(leftPiece, 5).toList, pieceToSmoothCurve(rightPiece, 5));
+
+    return UtilityScala.curveError((leftCurve ++ leftCurve).drop(n).take(l), (rightCurve ++ rightCurve).drop(m).take(l).reverse.map(_ * -1))
   }
 }
