@@ -232,7 +232,7 @@ public class Utility {
         return blob;
     }
 
-    public static void show(BufferedImage image) {
+    public static JFrame show(BufferedImage image) {
         JFrame frame = new JFrame();
         frame.add(new ImagePanel(deepCopy(image)));
         frame.pack();
@@ -248,6 +248,7 @@ public class Utility {
             }
         }
         frame.setVisible(true);
+        return frame;
     }
 
     public static class ImagePanel extends JPanel {
