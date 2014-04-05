@@ -699,6 +699,49 @@ public class Utility {
         return match;
     }
 
+    public static MatchInfo matchCurvatures(List<Double> curveA, List<Double> curveB) {
+        MatchInfo match = new MatchInfo();
+
+        curveB = negate(reverse(curveB));
+
+        match.error = Double.POSITIVE_INFINITY;
+        int tenPercent = (int) (0.1 * curveA.size());
+        for (int a = 0; a < curveA.size(); a++) {
+            //Print out % done
+            if (a % tenPercent == 0) {
+                System.out.println(Math.round((10.0 * a) / curveA.size()) * 10 + "%");
+            }
+            List<Double> shiftedCurveA = shift(curveA, a);
+            for (int b = 0; b < curveB.size(); b++) {
+                List<Double> shiftedCurveB = shift(curveB, b);
+                int m = Math.min(curveA.size(), curveB.size());
+                shiftedCurveA = shiftedCurveA.subList(0, m);
+                shiftedCurveB = shiftedCurveB.subList(0, m);
+                List<Double> aI = integrate(shiftedCurveA);
+                List<Double> bI = integrate(shiftedCurveB);
+                List<Double> eI = new ArrayList<Double>();
+                for (int i = 0; i < m; i++) {
+                    double e = 0;
+                    e += Math.abs(bI.get(i) - aI.get(i));
+                    eI.add(e);
+                }
+                List<Double> cEI = integrate(eI);
+
+                for (int i = 0; i < cEI.size(); i++) {
+                    double error = (cEI.get(i) + 20) / (i + 1);
+                    if (error < match.error || error == match.error && i > match.length) {
+                        match.indexA = a;
+                        match.indexB = Utility.mod((curveB.size() - 1) - b - i, curveB.size());
+                        match.length = i;
+                        match.error = error;
+                    }
+                }
+            }
+        }
+
+        return match;
+    }
+
     public static List<Vector2D> listPoint2DToVector2D(List<Point2D.Double> l) {
         List<Vector2D> lp = new ArrayList<Vector2D>();
         for (Point2D.Double p : l) {
