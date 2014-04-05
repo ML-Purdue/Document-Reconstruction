@@ -6,6 +6,7 @@ public class Main extends JFrame implements Listener {
     LinkedList<Step> steps = new LinkedList<Step>();
 
     public static void main(String[] args) {
+        //Sandbox.sandbox();
         new Main();
     }
 
@@ -17,7 +18,7 @@ public class Main extends JFrame implements Listener {
         steps.add(new AlphaCleanupStep(this));
         steps.add(new BlobDetectionStep(this));
         steps.add(new SmallBlobDeletionStep(this));
-        steps.add(new EdgeSolverStep(this));
+        steps.add(new DivideAndConquer(this));
 
         steps.add(0, null);
         update(null, null);
