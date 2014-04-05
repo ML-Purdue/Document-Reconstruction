@@ -71,3 +71,12 @@ object UtilityScala {
     return (leftPiece, p, e)
   }
 }
+
+  def doubleToColor(d: Double): Color = {
+    if (d.isNaN()) {
+      return Color.WHITE;
+    }
+    val v = 2 / (1 + Math.pow(3, -d)) - 1
+    new Vector3D(0.5, 0.5, 0.5) + (new Vector3D(0.5, 0, -0.5) * v) toColor
+  }
+}
