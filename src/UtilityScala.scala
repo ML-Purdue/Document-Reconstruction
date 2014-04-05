@@ -70,7 +70,6 @@ object UtilityScala {
 
     return (leftPiece, p, e)
   }
-}
 
   def doubleToColor(d: Double): Color = {
     if (d.isNaN()) {
