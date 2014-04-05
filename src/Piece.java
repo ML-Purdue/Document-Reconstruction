@@ -15,7 +15,7 @@ public class Piece {
     public Piece(Piece piece) {
         position = new Point2D.Double(piece.position.x, piece.position.y);
         rotation = piece.rotation;
-        image = piece.image;
+        image = Utility.deepCopy(piece.image);
     }
 
     public Piece() {
