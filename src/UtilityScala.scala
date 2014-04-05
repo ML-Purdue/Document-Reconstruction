@@ -71,6 +71,24 @@ object UtilityScala {
     return (leftPiece, p, e)
   }
 
+  def crop(b: BufferedImage): BufferedImage = {
+    var (minX, minY, maxX, maxY) = (b.getWidth(), b.getHeight(), 0, 0)
+    for (x <- 0 until b.getWidth(); y <- 0 until b.getHeight()) {
+      if (Utility.getAlphaValue(b.getRGB(x, y)) > 0) {
+        minX = Math.min(minX, x)
+        minY = Math.min(minY, y)
+        maxX = Math.max(maxX, x)
+        maxY = Math.max(maxY, y)
+      }
+    }
+
+    val newImage = new BufferedImage(maxX - minX, maxY - minY, BufferedImage.TYPE_INT_ARGB)
+    val g = newImage.getGraphics()
+    g.drawImage(b, -minX, -minY, null)
+
+    return newImage
+  }
+
   def doubleToColor(d: Double): Color = {
     if (d.isNaN()) {
       return Color.WHITE;
