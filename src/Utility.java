@@ -604,6 +604,15 @@ public class Utility {
         return list;
     }
 
+    public static List<Integer> negateInt(List<Integer> list) {
+        List<Integer> t = new ArrayList<Integer>(list);
+        list = new ArrayList<Integer>();
+        for (int i = 0; i < t.size(); i++) {
+            list.add(-t.get(i));
+        }
+        return list;
+    }
+
     public static double sum(List<Double> list) {
         double sum = 0;
         for (Double d : list) {
@@ -647,6 +656,9 @@ public class Utility {
     public static MatchInfo matchCurvaturesAndColors(List<Double> curveA, List<Double> curveB, List<Color> colorA, List<Color> colorB) {
         MatchInfo match = new MatchInfo();
 
+        List<Vector3D> dColorA = Utility.getColorDerivative(colorA);
+        List<Vector3D> dColorB = Utility.getColorDerivative(reverse(colorB));
+
         curveB = negate(reverse(curveB));
         colorB = reverse(colorB);
 
@@ -659,21 +671,29 @@ public class Utility {
             }
             List<Double> shiftedCurveA = shift(curveA, a);
             List<Color> shiftedColorA = shift(colorA, a);
+            List<Vector3D> shiftedDColorA = shift(dColorA, a);
             for (int b = 0; b < curveB.size(); b++) {
                 List<Double> shiftedCurveB = shift(curveB, b);
                 List<Color> shiftedColorB = shift(colorB, b);
+                List<Vector3D> shiftedDColorB = shift(dColorB, a);
                 int m = Math.min(curveA.size(), curveB.size());
                 shiftedCurveA = shiftedCurveA.subList(0, m);
                 shiftedCurveB = shiftedCurveB.subList(0, m);
                 shiftedColorA = shiftedColorA.subList(0, m);
                 shiftedColorB = shiftedColorB.subList(0, m);
+                shiftedDColorA = shiftedDColorA.subList(0, m);
+                shiftedDColorB = shiftedDColorB.subList(0, m);
                 List<Double> aI = integrate(shiftedCurveA);
                 List<Double> bI = integrate(shiftedCurveB);
                 List<Double> eI = new ArrayList<Double>();
                 for (int i = 0; i < m; i++) {
                     double e = 0;
                     e += Math.abs(bI.get(i) - aI.get(i));
-                    e += 0.3 * colorToPoint3d(shiftedColorA.get(i)).distance(colorToPoint3d(shiftedColorB.get(i))) / Math.sqrt(3);
+                    //System.out.println("curve: " + Math.abs(bI.get(i) - aI.get(i)));
+                    //e += 1.0 * colorToPoint3d(shiftedColorA.get(i)).distance(colorToPoint3d(shiftedColorB.get(i))) / Math.sqrt(3);
+                    //System.out.println(colorToPoint3d(shiftedColorA.get(i)).distance(colorToPoint3d(shiftedColorB.get(i))) / Math.sqrt(3));
+                    e += 0.05 * Math.abs(shiftedDColorB.get(i).$minus(shiftedDColorA.get(i)).magnitude());
+                    //System.out.println("Ddiff: " + .05 * Math.abs(shiftedDColorB.get(i).$minus(shiftedDColorA.get(i)).magnitude()));
 
                     if (i % 10 == 0) {
                         //                        System.out.println(shiftedColorA.get(i) + " " + shiftedColorB.get(i));
@@ -863,6 +883,22 @@ public class Utility {
             colors.add(new Color(getAvgColor(image, p, 15)));
         }
         return colors;
+    }
+
+    public static List<Vector3D> getColorDerivative(List<Color> colors) {
+        List<Vector3D> derivatives = new ArrayList<Vector3D>();
+        derivatives.add(new Vector3D(0, 0, 0));
+        for (int i = 1; i < colors.size(); i++) {
+            int redChange = colors.get(i).getRed() - colors.get(i - 1).getRed();
+            int blueChange = colors.get(i).getBlue() - colors.get(i - 1).getBlue();
+            int greenChange = colors.get(i).getGreen() - colors.get(i - 1).getGreen();
+            /*System.out.println(colors.get(i));
+            System.out.println(colors.get(i - 1));
+            System.out.println(redChange + blueChange + greenChange);*/
+            derivatives.add(new Vector3D(redChange, blueChange, greenChange));
+            //System.out.println(derivatives.get(i).magnitude());
+        }
+        return derivatives;
     }
 
     public static double shoeLace(List<java.awt.geom.Point2D.Double> a, List<java.awt.geom.Point2D.Double> b) {
