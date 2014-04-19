@@ -34,4 +34,8 @@ public class Piece {
         }
         return true;
     }
+
+    public String toString() {
+        return String.format("[Piece: position %s rotation %s", position, rotation);
+    }
 }

@@ -12,13 +12,13 @@ public class Main extends JFrame implements Listener {
 
     public Main() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //new AcceptPairStep(this).begin(null);
         steps.add(new LoadImageStep(this));
         steps.add(new BackgroundSubtractionStep(this));
         steps.add(new AlphaCleanupStep(this));
         steps.add(new BlobDetectionStep(this));
         steps.add(new SmallBlobDeletionStep(this));
-        steps.add(new DivideAndConquer(this));
+        steps.add(new AcceptPairStep(this));
+        //steps.add(new DivideAndConquer(this));
         //steps.add(new EdgeSolverStep(this));
         //steps.add(new CurvatureStackSolverStep(this));
 
