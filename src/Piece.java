@@ -20,4 +20,18 @@ public class Piece {
 
     public Piece() {
     }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof Piece)) {
+            return false;
+        }
+        Piece other = (Piece) o;
+        if (!other.position.equals(position)) {
+            return false;
+        }
+        if (other.rotation != rotation) {
+            return false;
+        }
+        return true;
+    }
 }
