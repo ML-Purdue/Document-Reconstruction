@@ -1,7 +1,8 @@
-import java.awt.GridLayout;
-import java.awt.image.BufferedImage;
-import javax.swing.JFrame;
-import java.util.ArrayList;
+import java.awt.GridLayout
+import java.awt.image.BufferedImage
+import java.util.ArrayList
+
+import javax.swing.JFrame
 
 class AcceptPairStep(listener: Listener) extends Step(listener) {
 
@@ -16,12 +17,11 @@ class AcceptPairStep(listener: Listener) extends Step(listener) {
     frame.setVisible(true);
   }
 
-  def notifyTriplets(pairs: ArrayList[((Piece, Piece), BufferedImage, Double)]) =
-    {
-      triplets.clear();
-      triplets.addAll(pairs);
-      for (i <- 0 until triplets.size()) {
-        frame.add(new AcceptPairView(triplets.get(i)._2));
-      }
+  def notifyTriplets(pairs: ArrayList[((Piece, Piece), BufferedImage, Double)]) = {
+    triplets.clear();
+    triplets.addAll(pairs);
+    for (i <- 0 until triplets.size()) {
+      frame.add(new AcceptPairView(triplets.get(i)._2));
     }
+  }
 }
