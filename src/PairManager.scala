@@ -3,7 +3,7 @@ import scala.collection.mutable.ListBuffer
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 
-class PairManager(piecesJava: java.util.List[Piece], observer: Object) extends Observable() with Runnable {
+class PairManager(piecesJava: java.util.List[Piece]) extends Observable() with Runnable {
   var acceptPending = false
   var accepted: (Piece, Piece, Double) = null
   var pieces = piecesJava.to[ListBuffer]
