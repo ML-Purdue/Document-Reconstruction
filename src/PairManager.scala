@@ -32,6 +32,7 @@ class PairManager(var pieces: ListBuffer[Piece]) extends Observable() with Runna
           val (lP, rP, eP) = UtilityScala.randomConfiguration(l, r)
           if (eP < e) {
             pairs.update(i, (lP, rP, eP))
+            notifyObservers(pairs)
           }
         }
       }
