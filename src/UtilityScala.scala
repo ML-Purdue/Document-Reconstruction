@@ -91,6 +91,18 @@ object UtilityScala {
     return newImage
   }
 
+  def merge(l: Piece, r: Piece): Piece = {
+    val longest = Math.max(Math.max(l.image.getWidth(), l.image.getHeight()), Math.max(r.image.getWidth(), r.image.getHeight()))
+    val (sw, sh) = (4 * longest, 4 * longest)
+
+    val newImage = new BufferedImage(sw, sh, BufferedImage.TYPE_INT_ARGB)
+
+    Utility.drawPiece(l, newImage)
+    Utility.drawPiece(r, newImage)
+    val cropped = UtilityScala.crop(newImage)
+    return new Piece(new Point2D.Double(cropped.getWidth() / 2, cropped.getHeight() / 2), 0, cropped)
+  }
+
   def mergeMatch(lOld: Piece, lp: List[Point2D.Double], rOld: Piece, rp: List[Point2D.Double], info: Utility.MatchInfo): Piece = {
     val (l, r) = (new Piece(lOld), new Piece(rOld))
     val longest = Math.max(Math.max(l.image.getWidth(), l.image.getHeight()), Math.max(r.image.getWidth(), r.image.getHeight()))
